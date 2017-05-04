@@ -1,0 +1,55 @@
+<div class="small-left-padding">
+	<div>
+		<h4>
+			Spell Check
+			<a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true" class="glyphicon glyphicon-info-sign info-icon"></a>
+		</h4>
+
+		<div>
+			<button type="button" class="btn btn-primary"
+				ng-click="openAddSpellCheck = !openAddSpellCheck">Add</button>
+		</div>
+		<div ng-init="openAddSpellCheck = false" ng-show="openAddSpellCheck">
+			<form role="form">
+				<div class="small-top-padding large-bottom-padding">
+					<div class="col-xs-3 no-left-padding">
+						<input class="form-control" placeholder = "Keyword"
+							ng-model="key" id="key" type="text">
+					</div>
+					<div class="col-xs-4">
+						<input class="form-control" placeholder = "Spelling"
+							ng-model="spellings" id="spelling" type="text">
+					</div>
+					<div class="col-xs-3">
+						<button type="button" class="btn btn-primary"
+							ng-click="addSpellings()">Save</button>
+					</div>
+
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="small-top-padding">
+		<table class="table">
+			<tr>
+				<th class="no-border">Keyword</th>
+				<th class="no-border">Spellings</th>
+				<th class="no-border">Actions</th>
+			</tr>
+			<tr ng-repeat="(key, values) in concatenatedSpellings">
+				<td title="'Key'">{{key}}</td>
+				<td title="'Spellings'">
+                    <span class="displaySpelling">{{values}}</span>
+                    <input class="editSpelling" ng-model="values">
+                </td>
+                <td>
+                    <a show-spelling-edit data-toggle="tooltip" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a data-toggle="tooltip" ng-click="deleteSpelling(key)" title="Delete"><span class="glyphicon glyphicon-trash small-left-padding"></span></a>
+                    <button ng-click="updateSpelling(key,values)" type="button" class="btn btn-primary btn-xs small-left-margin saveSpelling">Save</button>
+                </td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+
