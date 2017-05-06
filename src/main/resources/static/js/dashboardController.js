@@ -8,7 +8,8 @@ if (!$rootScope.validUser) {
 Highcharts.chart('container', {
 
     chart: {
-        type: 'column'
+        type: 'column',
+        backgroundColor:'#f5f5f0'
     },
 
     title: {
