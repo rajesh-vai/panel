@@ -1,0 +1,76 @@
+<div class="small-left-padding">
+    <div>
+        <h4>Rank By Product
+            <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+               class="glyphicon glyphicon-info-sign info-icon"></a>
+        </h4>
+        <div>
+            <form role="form">
+                <div class="small-top-padding large-bottom-padding">
+                    <div class="col-xs-3 no-left-padding">
+                        <div class="form-group">
+                            <label for="sel1">Category</label>
+                            <select class="form-control" id="categoryDropdown" ng-model="selectedCategory" ng-options="item for item in categories">
+                            </select>
+                        </div>
+                    </div>
+                    <!--<div class="col-xs-3">
+						<div class="form-group">
+							<label for="sel2">Sub Category</label>
+							<select class="form-control" id="sel2">
+								<option>Select</option>
+								<option>Mobile</option>
+							</select>
+						</div>
+					</div>-->
+                    <div class="col-xs-3">
+                        <label for="sel3">Product Id</label>
+                        <input class="form-control" placeholder="Enter Product Id" ng-model="key" id="key" type="text"
+                               id="sel3">
+                    </div>
+                    <div class="col-xs-3">
+                        </br>
+                        <button type="button" class="btn btn-primary very-small-top-margin" ng-click="filter(key)"
+                                id="sel4">Search
+                        </button>
+                        <img ng-show="showSpinner" ng-src="images/spinner.gif"
+                             class="small-left-margin small-top-margin spinner"/>
+                    </div>
+                    <div class="col-xs-3">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-xs-12 font-size-small">
+        *Search for the product by Product Id to set the rank
+    </div>
+
+    <div class="small-top-padding">
+        <table class="table">
+            <tr>
+                <th class="no-border">Product Id</th>
+                <th class="no-border">Rank</th>
+                <th class="no-border">Actions</th>
+            </tr>
+            <tr ng-repeat="(key, values) in concatenatedSynonyms">
+                <td title="'Key'">{{key}}</td>
+                <td title="'Synonyms'">
+                    <span class="displaySynonym">{{values}}</span>
+                    <input class="editSynonym" ng-model="values">
+                </td>
+                <td>
+                    <a show-synonym-edit data-toggle="tooltip" title="Edit"><span
+                            class="glyphicon glyphicon-pencil"></span></a>
+                    <a data-toggle="tooltip" ng-click="deleteSynonym(key)" title="Delete"><span
+                            class="glyphicon glyphicon-trash small-left-padding"></span></a>
+                    <button ng-click="updateSynonym(key,values)" type="button"
+                            class="btn btn-primary btn-xs small-left-margin saveSynonym">Save
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>

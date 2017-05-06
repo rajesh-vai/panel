@@ -1,0 +1,33 @@
+<div class="small-left-padding">
+	<div>
+		<h4>Sorting Configuration
+			<a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true" class="glyphicon glyphicon-info-sign info-icon"></a>
+		</h4>
+		<div>
+			<form role="form">
+				<div class="small-top-padding large-bottom-padding">
+					<div class="col-xs-3">
+						<label for="sel1">Sort By</label>
+						<select class="form-control" data-ng-model="selectedSortItem" ng-options="x for x in names" ng-change="getSortRank()">
+						</select>
+					</div>
+					<div class="col-xs-3">
+						<label for="sel3">Rank</label>
+						<input class="form-control" placeholder = "Enter Rank" ng-model="rankValue" id="rank" type="text" id="sel3">
+					</div>
+					
+					<div class="col-xs-3">
+						</br>
+						<div>
+							<button type="button" class="btn btn-primary medium-top-margin" ng-click="saveSortRankConfigs()">Apply</button>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-xs-12">
+			*Apply Sort Order(Rank) at Category level  
+		</div>
+	</div>
+</div>
+

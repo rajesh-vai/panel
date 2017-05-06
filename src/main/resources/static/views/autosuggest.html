@@ -1,0 +1,84 @@
+<div class="auto-suggest small-left-padding">
+    <h4>Auto Suggest Configuration
+        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+           class="glyphicon glyphicon-info-sign info-icon"></a>
+    </h4>
+    <div class="panel panel-default">
+
+        <div class="panel-body">
+            <div class="col-xs-12">
+                <div class="col-xs-10">
+                    <h4>Auto Suggest
+                        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+                           class="glyphicon glyphicon-info-sign info-icon"></a>
+                    </h4>
+                    <p>
+                        Displays keyword suggestions, top searches and popular products.
+                    </p>
+                </div>
+                <div class="col-xs-2">
+                    <toggle ng-model="autosuggest" size="btn-xs"></toggle>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="col-xs-12">
+                <div class="col-xs-10">
+                    <h4>Top Queries
+                        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+                           class="glyphicon glyphicon-info-sign info-icon"></a>
+                    </h4>
+                    <p>
+                        Enable to display top performing search queries
+                    </p>
+                </div>
+                <div class="col-xs-2">
+                    <toggle ng-model="topqueries" size="btn-xs"></toggle>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="col-xs-12">
+                <div class="col-xs-10">
+                    <h4>Keyword Suggestions
+                        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+                           class="glyphicon glyphicon-info-sign info-icon"></a>
+                    </h4>
+                    <p>
+                        Enable to display intelligent keyword suggestion
+                    </p>
+                </div>
+                <div class="col-xs-2">
+                    <toggle ng-model="keywordsuggestions" size="btn-xs"></toggle>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="col-xs-12">
+                <div class="col-xs-10">
+                    <h4>Search Scope
+                        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+                           class="glyphicon glyphicon-info-sign info-icon"></a>
+                    </h4>
+                    <p>
+                        Enable to display scope suggestions within the auto suggest widget
+                    </p>
+                </div>
+                <div class="col-xs-2">
+                    <toggle ng-model="searchscope" size="btn-xs"></toggle>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel-body">
+            <button type="button" class="btn btn-primary medium-top-margin pull-right" ng-click="saveAutoSuggestConfigs()">Apply</button>
+        </div>
+
+
+    </div>
+</div>
