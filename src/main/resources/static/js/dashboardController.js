@@ -4,6 +4,62 @@ if (!$rootScope.validUser) {
     $location.path('/login');
     window.location.reload();
 }
+
+Highcharts.chart('container', {
+
+    chart: {
+        type: 'column'
+    },
+
+    title: {
+        text: 'Total fruit consumtion, grouped by gender'
+    },
+
+    xAxis: {
+        categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+    },
+
+    yAxis: {
+        allowDecimals: false,
+        min: 0,
+        title: {
+            text: 'Number of fruits'
+        }
+    },
+
+    tooltip: {
+        formatter: function () {
+            return '<b>' + this.x + '</b><br/>' +
+                this.series.name + ': ' + this.y + '<br/>' +
+                'Total: ' + this.point.stackTotal;
+        }
+    },
+
+    plotOptions: {
+        column: {
+            stacking: 'normal'
+        }
+    },
+
+    series: [{
+        name: 'John',
+        data: [5, 3, 4, 7, 2],
+        stack: 'male'
+    }, {
+        name: 'Joe',
+        data: [3, 4, 4, 2, 5],
+        stack: 'male'
+    }, {
+        name: 'Jane',
+        data: [2, 5, 6, 2, 1],
+        stack: 'female'
+    }, {
+        name: 'Janet',
+        data: [3, 0, 4, 4, 3],
+        stack: 'female'
+    }]
+});
+
 var data = {"xData": ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],"yData":[{
                 "name": "Tokyo",
                 "data": [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
