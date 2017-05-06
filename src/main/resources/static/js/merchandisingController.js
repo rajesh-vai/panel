@@ -9,7 +9,7 @@ if (!$rootScope.validUser) {
     { title:'Rank By Product', route: 'panel.merchandising.rank' },
     { title:'Rank by Keyword', route: 'panel.merchandising.rankByKey' },
     { title:'Facet Config', route: 'panel.merchandising.facetconfig' },
-//    { title:'Sort Config', route: 'panel.merchandising.sortingConfig' }
+    { title:'Sort Config', route: 'panel.merchandising.sortingConfig' }
   ];
 
 
