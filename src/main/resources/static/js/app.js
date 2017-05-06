@@ -58,6 +58,11 @@ $urlRouterProvider.otherwise('/login');
             templateUrl: 'views/contactus.html',
             controller: 'contactusController'
         })
+        .state('panel.analytics', {
+            url: '/analytics',
+            templateUrl: 'views/analytics.html',
+            controller: 'analyticsController'
+        })
         .state('panel.viewnotifications', {
             url: '/notifications',
             templateUrl: 'views/viewnotifications.html',
