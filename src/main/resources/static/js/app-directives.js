@@ -149,7 +149,12 @@
                         }
                     };
                 }
-            ]);
+            ])
+            .directive('appSizer', function() {
+                return function (scope, element, attrs) {
+                    element.height($('body').height() - 60);
+                }
+            });
 
 
 })(angular);
