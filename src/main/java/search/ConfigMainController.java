@@ -392,6 +392,31 @@ public class ConfigMainController {
     }
     // End of Precision Configuration
 
+    @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}"}, method = {
+            RequestMethod.POST})
+    public void updateRankByKey(@PathVariable String companyid,@PathVariable String rank,@RequestBody String data) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+Integer.parseInt(companyid) + " and productid =" +Integer.parseInt(data));
+        String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + Integer.parseInt(companyid) + "," + Integer.parseInt(data) + "," + Integer.parseInt(rank) + ")";
+        dbUtils.InsertUpdateData(qry);
+
+//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+
+    }
+
+    @RequestMapping(value = {"config/update/rankbyproduct/{companyid}/{rank}/{productid}"}, method = {
+            RequestMethod.POST})
+    public void updateRankByProduct(@PathVariable String companyid, @PathVariable String rank, @PathVariable int productid, @RequestBody String category) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + Integer.parseInt(companyid) + " and productid =" + productid + " and categoryname ='" + category + "'");
+        String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + Integer.parseInt(companyid) + "," + productid + "," + Integer.parseInt(rank) + ",'%s')";
+        qry = String.format(qry, category);
+        dbUtils.InsertUpdateData(qry);
+//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+
+    }
+
+    //Rank code starts
+
+    //Rank code ends
     @RequestMapping(value = {"config/update/filters/{companyid}"}, method = {
             RequestMethod.POST})
     public void updateFilters(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {

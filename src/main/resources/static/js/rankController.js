@@ -42,11 +42,9 @@ if (!$rootScope.validUser) {
         });
     };
 
-    $scope.updateDetails = function(updatedProductId) {
+    $scope.updateDetails = function(updatedProductId,rank,category) {
         $scope.showSpinner = true;
-        var updatedRecord = $scope.filteredResults.filter(r => r.pid == updatedProductId);
-        console.log(updatedRecord);
-        var res = $http.post(uriPrefix + '/updateJson', updatedRecord);
+        var res = $http.post(uriPrefix + '/update/rankbyproduct/'+$rootScope.companyid+'/'+rank+'/'+updatedProductId , category);
         res.success(function(data, status, headers, config) {
             Notification.success('Update successful');
             $scope.showSpinner = false;

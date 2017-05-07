@@ -39,11 +39,9 @@ if (!$rootScope.validUser) {
         });
     };
 
-    $scope.updateDetails = function(updatedProductId) {
+    $scope.updateDetails = function(updatedProductId, rank) {
         $scope.showSpinner = true;
-        var updatedRecord = $scope.filteredResults.filter(r => r.ns1_id == updatedProductId);
-        console.log(updatedRecord);
-        var res = $http.post(uriPrefix + '/updateJson', updatedRecord);
+        var res = $http.post(uriPrefix + '/update/rankbykey/'+$rootScope.companyid+'/'+rank, updatedProductId);
         res.success(function(data, status, headers, config) {
             Notification.success('Update successful');
             $scope.showSpinner = false;
