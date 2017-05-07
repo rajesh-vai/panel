@@ -13,18 +13,18 @@ Highcharts.chart('container', {
     },
 
     title: {
-        text: 'Total fruit consumtion, grouped by gender'
+        text: 'Top 5 categories, based on Number of queries'
     },
 
     xAxis: {
-        categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+        categories: ['Kurtis', 'Tees', 'Leggings', 'Jeans', 'Sandals']
     },
 
     yAxis: {
         allowDecimals: false,
         min: 0,
         title: {
-            text: 'Number of fruits'
+            text: 'Numbers in 1000s'
         }
     },
 
@@ -43,14 +43,15 @@ Highcharts.chart('container', {
     },
 
     series: [{
-        name: 'John',
-        data: [5, 3, 4, 7, 2],
+        name: 'Simple Queries',
+        data: [6, 8, 7, 5, 9],
         stack: 'male'
     }, {
-        name: 'Joe',
-        data: [3, 4, 4, 2, 5],
+        name: 'Queries with Multiple Attributes',
+        data: [2, 3, 1, 1, 2],
         stack: 'male'
-    }, {
+    }
+   /* , {
         name: 'Jane',
         data: [2, 5, 6, 2, 1],
         stack: 'female'
@@ -58,7 +59,8 @@ Highcharts.chart('container', {
         name: 'Janet',
         data: [3, 0, 4, 4, 3],
         stack: 'female'
-    }]
+    }*/
+    ]
 });
 
 var data = {"xData": ["Jan", "Feb", "Mar", "Apr", "May", "Jun","Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],"yData":[{
