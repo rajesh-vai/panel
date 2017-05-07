@@ -30,7 +30,7 @@ Highcharts.chart('container1', {
         backgroundColor:'#f5f5f0'
     },
     title: {
-        text: 'Browser market shares. January, 2015 to May, 2015'
+        text: 'Queries from different browsers'
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -87,13 +87,13 @@ Highcharts.chart('container2', {
         backgroundColor:'#f5f5f0'
     },
     title: {
-        text: 'Historic and Estimated Worldwide Population Distribution by Region'
+        text: 'Queries from different parts of the world'
     },
     subtitle: {
-        text: 'Source: Wikipedia.org'
+//        text: 'Source: Wikipedia.org'
     },
     xAxis: {
-        categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
+        categories: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
         tickmarkPlacement: 'on',
         title: {
             enabled: false
@@ -151,7 +151,7 @@ Highcharts.chart('container3', {
     },
 
     title: {
-        text: 'Speedometer'
+        text: 'Query Response Speed Analyser'
     },
 
     pane: {
@@ -208,7 +208,7 @@ Highcharts.chart('container3', {
             rotation: 'auto'
         },
         title: {
-            text: 'km/h'
+            text: 'Queries/Min'
         },
         plotBands: [{
             from: 0,
@@ -226,10 +226,10 @@ Highcharts.chart('container3', {
     },
 
     series: [{
-        name: 'Speed',
+        name: 'Responses',
         data: [80],
         tooltip: {
-            valueSuffix: ' km/h'
+            valueSuffix: ' Queries/Min'
         }
     }]
 
