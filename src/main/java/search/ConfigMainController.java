@@ -220,8 +220,8 @@ public class ConfigMainController {
     //spelling code
     @RequestMapping(value = {"config/spellings/{companyid}"}, method = {
             RequestMethod.GET})
-    public Map getSpellings(@PathVariable String companyid) throws IOException, URISyntaxException {
-        String qry = "Select keyword,spellings from spellcheck where companyid=" + 1;
+    public Map getSpellings(@PathVariable int companyid) throws IOException, URISyntaxException {
+        String qry = "Select keyword,spellings from spellcheck where companyid=" + companyid;
         ResultSet rs = dbUtils.selectOutput(qry);
         Map map = dbUtils.convertResultSetToHashMap(rs, "keyword", "spellings");
         return map;

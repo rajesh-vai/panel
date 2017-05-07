@@ -6,14 +6,7 @@
     <div class="no-left-padding">
         <label for="sel1">Category</label>
         <div>
-            <select class="form-control" id="categoryDropdown" data-ng-model="selectedCategory" ng-change="getSortRank()" style="width: 400px">
-                <option>Select</option>
-                <option>Fabels > Women > Dresses</option>
-                <option>Fabels > Women > Jackets</option>
-                <option>Fabels > Women > Shirts</option>
-                <option>Furniture > Bedroom > Beds</option>
-                <option>Furniture > Bedroom > Mirror</option>
-
+            <select class="form-control" id="categoryDropdown" ng-model="selectedCategory" ng-options="item for item in categories" style="width: 400px">
             </select>
         </div>
     </div>
