@@ -33,9 +33,9 @@
                 <th class="no-border col-xs-2 "></th>
             </tr>
             <tr ng-repeat="result in filteredResults ">
-                <td>{{result.ns1_id}}</td>
-                <td>{{result.ns1_product_type}}</td>
-                <td>{{result.ns1_title}}</td>
+                <td>{{result.pid}}</td>
+                <td>{{result.category}}</td>
+                <td>{{result.title}}</td>
                 <td>
                     <span ng-show="!showSaveCancel ">{{result.rank}}</span>
                     <input ng-show="showSaveCancel " class="form-control " ng-model="result.rank " type="text ">

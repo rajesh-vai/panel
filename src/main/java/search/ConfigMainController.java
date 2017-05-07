@@ -139,7 +139,7 @@ public class ConfigMainController {
         //				elasticDbUrl + "_sql?sql=select * from martjack_fabindia where ns1_id='" + filterText + "' LIMIT 25")
         //				.ignoreContentType(true).get();
         Document doc = Jsoup.connect(
-                elasticDbUrl + "_search?q=ns1_id:" + filterText)
+                elasticDbUrl + "_search?q=pid:" + filterText)
                 .ignoreContentType(true).get();
         JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
@@ -167,7 +167,7 @@ public class ConfigMainController {
         List<String> outputLines = new ArrayList<>();
 
         for (int j = 0; j < resultsArray.size(); j++) {
-            if (resultsArray.get(j).asObject().get("_score").asDouble() > 2) {
+            if (resultsArray.get(j).asObject().get("_score").asDouble() > 1.2) {
                 JsonValue record = resultsArray.get(j).asObject().get("_source");
                 outputLines.add(record.toString());
             }

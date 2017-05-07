@@ -44,7 +44,7 @@ if (!$rootScope.validUser) {
 
     $scope.updateDetails = function(updatedProductId) {
         $scope.showSpinner = true;
-        var updatedRecord = $scope.filteredResults.filter(r => r.ns1_id == updatedProductId);
+        var updatedRecord = $scope.filteredResults.filter(r => r.pid == updatedProductId);
         console.log(updatedRecord);
         var res = $http.post(uriPrefix + '/updateJson', updatedRecord);
         res.success(function(data, status, headers, config) {

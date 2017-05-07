@@ -185,7 +185,8 @@ public class DQueryProcessor {
 	public String process(String index_name, String _query) throws Exception {
 		System.out.println(_query);
 		//		newQuery = "{\"query\":{\"bool\":{\"should\":[{\"function_score\":{\"functions\":[_and_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}},{\"function_score\":{\"functions\":[_or_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}}_doubleQuery_]}}}";
-		newQuery = "{\"from\":0,\"size\":200,\"query\":{\"bool\":{\"should\":[{\"function_score\":{\"functions\":[_and_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}},{\"function_score\":{\"functions\":[_or_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}}],\"must\":[_doubleQuery_]}},\"_source\":{\"includes\":[],\"excludes\":[\"s_n_s_tags\"]},\"sort\":[{\"_score\":{\"order\":\"desc\"}},{\"popularity\":{\"order\":\"desc\"}}]}";
+		newQuery = "{\"from\":0,\"size\":200,\"query\":{\"bool\":{\"should\":[{\"function_score\":{\"functions\":[_and_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}},{\"function_score\":{\"functions\":[_or_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}}],\"must\":[_doubleQuery_]}},\"_source\":{\"includes\":[],\"excludes\":[\"s_n_s_tags\"]},\"sort\":[{\"_score\":{\"order\":\"desc\"}}]}";
+//		newQuery = "{\"from\":0,\"size\":200,\"query\":{\"bool\":{\"should\":[{\"function_score\":{\"functions\":[_and_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}},{\"function_score\":{\"functions\":[_or_part_],\"score_mode\":\"sum\",\"boost_mode\":\"max\"}}],\"must\":[_doubleQuery_]}},\"_source\":{\"includes\":[],\"excludes\":[\"s_n_s_tags\"]},\"sort\":[{\"_score\":{\"order\":\"desc\"}},{\"popularity\":{\"order\":\"desc\"}}]}";
 
 		//        System.out.println(newQuery);
 		inputQry = _query.trim().toLowerCase();

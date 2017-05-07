@@ -29,7 +29,7 @@ import javax.inject.Inject;
 public class SearchMainController {
 
 	//	private static final String URL = "http://%s:%s/jabong/_search?size=250";
-	private static final String URL = "http://%s:%s/%s/product/_search?";
+	private static final String URL = "http://%s:%s/%s/_search?";
 
 
 
@@ -66,14 +66,14 @@ public class SearchMainController {
 		String parsedQuery="",url="";
 		try {
 			qp = DQueryProcessor.instance(resourceLocation);
-			indexName = "martjack_fabindia";
+//			indexName = "martjack_fabindia";
 			parsedQuery = qp.process(indexName,query);
 			url = String.format(URL, elastichost,elasticport,indexName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		parsedQuery = parsedQuery.replaceAll("\"price\":", "\"ns1_price\":");
+//		parsedQuery = parsedQuery.replaceAll("\"price\":", "\"ns1_price\":");
 		System.out.println(parsedQuery);
 
 		return restTemplate.postForObject(url, parsedQuery, String.class);
@@ -84,7 +84,7 @@ public class SearchMainController {
 		DQueryProcessor qp = null;
 		String parsedQuery="",url="";
 		try {
-			indexName = "martjack_fabindia";
+//			indexName = "martjack_fabindia";
 			qp = DQueryProcessor.instance(resourceLocation);
 			parsedQuery = qp.process(indexName,query);
 			url = String.format(URL, elastichost,elasticport,indexName);
@@ -92,7 +92,7 @@ public class SearchMainController {
 			e.printStackTrace();
 		}
 
-		parsedQuery = parsedQuery.replaceAll("\"price\":", "\"ns1_price\":");
+//		parsedQuery = parsedQuery.replaceAll("\"price\":", "\"ns1_price\":");
 		System.out.println(parsedQuery);
 
 		JsonObject results = Json.parse(restTemplate.postForObject(url, parsedQuery, String.class).toString()).asObject();

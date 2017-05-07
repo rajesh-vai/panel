@@ -46,27 +46,34 @@
         *Search for the product by Product Id to set the rank
     </div>
 
-    <div class="small-top-padding">
-        <table class="table">
+    <div class="small-top-padding" ng-show="filteredResults.length">
+        <table class="table" ng-init="showEdit = true; showSaveCancel = false;">
             <tr>
-                <th class="no-border">Product Id</th>
-                <th class="no-border">Rank</th>
-                <th class="no-border">Actions</th>
+                <th class="no-border col-xs-1">Product Id</th>
+                <th class="no-border col-xs-3">Category</th>
+                <th class="no-border col-xs-3">Title</th>
+                <th class="no-border col-xs-1">Rank</th>
+                <th class="no-border col-xs-2"></th>
             </tr>
-            <tr ng-repeat="(key, values) in concatenatedSynonyms">
-                <td title="'Key'">{{key}}</td>
-                <td title="'Synonyms'">
-                    <span class="displaySynonym">{{values}}</span>
-                    <input class="editSynonym" ng-model="values">
+            <tr ng-repeat="result in filteredResults">
+                <td>{{result.pid}}</td>
+                <td>{{result.category}}</td>
+                <td>{{result.title}}</td>
+                <td>
+                    <span ng-show="!showSaveCancel">{{result.rank}}</span>
+                    <input ng-show="showSaveCancel" class="form-control" ng-model="result.rank" type="text">
                 </td>
                 <td>
-                    <a show-synonym-edit data-toggle="tooltip" title="Edit"><span
+                    <span><a ng-show="showEdit" ng-click="showEdit = false; showSaveCancel= true;" class="hand"><span
                             class="glyphicon glyphicon-pencil"></span></a>
-                    <a data-toggle="tooltip" ng-click="deleteSynonym(key)" title="Delete"><span
-                            class="glyphicon glyphicon-trash small-left-padding"></span></a>
-                    <button ng-click="updateSynonym(key,values)" type="button"
-                            class="btn btn-primary btn-xs small-left-margin saveSynonym">Save
-                    </button>
+                    </span>
+                    <span><a ng-show="showSaveCancel"
+                             ng-click="updateDetails(result.pid);showSaveCancel = false; showEdit= true;"
+                             class="hand"><span class="glyphicon glyphicon-ok small-top-margin"></span></a>
+                    </span>
+                    <span><a ng-show="showSaveCancel" ng-click="showSaveCancel = false; showEdit= true;"
+                             class="hand"><span class="glyphicon glyphicon-remove small-left-margin"></span></a>
+                    </span>
                 </td>
             </tr>
         </table>
