@@ -1039,3 +1039,7 @@ background-color: #0D6989 !important;
 .highcharts-credits{
     display : none;
 }
+
+.label-info-black{
+    color: black;
+}
