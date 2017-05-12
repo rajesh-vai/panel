@@ -40,8 +40,8 @@ body {
 }
 
 
-.panel-group .panel-heading+.panel-collapse>.list-group,
-.panel-group .panel-heading+.panel-collapse>.panel-body {
+.sidebar-wrapper .panel-group .panel-heading+.panel-collapse>.list-group,
+.sidebar-wrapper .panel-group .panel-heading+.panel-collapse>.panel-body {
     border: none;
 }
 
@@ -167,10 +167,6 @@ body {
 }
 
 
-.panel-group .panel-heading+.panel-collapse>.list-group,
-.panel-group .panel-heading+.panel-collapse>.panel-body {
-    border: none;
-}
 
 .panel-heading {
     border-radius: 3px;
@@ -458,11 +454,11 @@ input:checked + .slider:before {
     color: black;
 }
 
-.list-group {
+.sidebar-wrapper .list-group {
     padding-left: 40px;
 }
 
-.list-group-item {
+.sidebar-wrapper .list-group-item {
     position: relative;
     display: block;
     padding: 10px 15px;
@@ -553,8 +549,8 @@ input:checked + .slider:before {
     right: 0;
     bottom: 0;
     left: 0;
-    width: 450px;
-    height: 450px;
+    width: 400px;
+    height: 330px;
     color : #0d6989;
 }
 .align-center {
@@ -759,11 +755,11 @@ background-color: #0D6989 !important;
     margin-left: 1.25rem
 }
 
-.card>.list-group:first-child .list-group-item:first-child {
+.sidebar-wrapper .card>.list-group:first-child .list-group-item:first-child {
     border-radius: .25rem .25rem 0 0
 }
 
-.card>.list-group:last-child .list-group-item:last-child {
+. sidebar-wrapper .card>.list-group:last-child .list-group-item:last-child {
     border-radius: 0 0 .25rem .25rem
 }
 
@@ -1043,3 +1039,76 @@ background-color: #0D6989 !important;
 .label-info-black{
     color: black;
 }
+
+.notify{
+    line-height: 26px;
+    float: left;
+    width: 26px;
+    height: 26px;
+    margin: 0 10px 0 0;
+    text-align: center;
+    border-radius: 50px;
+    border-color: #f96339;
+    background: #fa7753;
+    color: white;
+}
+
+.alert-dropdown {
+    width: 325px;
+}
+
+.notifiy-text{
+    line-height: 2;
+    font-family: serif;
+}
+
+.input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+input[type=radio]:checked + label>img {
+  border: 1px solid #fff;
+  box-shadow: 0 0 3px 3px #090;
+}
+
+/* Stuff after this is only to make things more pretty */
+input[type=radio] + label>img {
+  border: 1px dashed #444;
+  transition: 500ms all;
+}
+
+input[type=radio]:checked + label>img {
+  transform:
+    rotateZ(-10deg)
+    rotateX(10deg);
+}
+
+/*
+ | //lea.verou.me/css3patterns
+ | Because white bgs are boring.
+*/
+html {
+  background-color: #fff;
+  background-size: 100% 1.2em;
+  background-image:
+    linear-gradient(
+      90deg,
+      transparent 79px,
+      #abced4 79px,
+      #abced4 81px,
+      transparent 81px
+    ),
+    linear-gradient(
+      #eee .1em,
+      transparent .1em
+    );
+}
+
+.apply-btn{
+    margin-top: 0px;
+    padding-top: 2‒;
+    margin-right: 10px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+ }

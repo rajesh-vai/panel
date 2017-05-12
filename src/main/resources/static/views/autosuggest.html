@@ -1,8 +1,11 @@
 <div class="auto-suggest small-left-padding">
+    <button type="button" class="btn btn-primary pull-right apply-btn" ng-click="saveAutoSuggestConfigs()">Apply</button>
     <h4>Auto Suggest Configuration
         <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
            class="glyphicon glyphicon-info-sign info-icon"></a>
+
     </h4>
+
     <div class="panel panel-default">
 
         <div class="panel-body">
@@ -74,9 +77,42 @@
             </div>
         </div>
 
-
         <div class="panel-body">
-            <button type="button" class="btn btn-primary medium-top-margin pull-right" ng-click="saveAutoSuggestConfigs()">Apply</button>
+
+
+            <div>
+                <div>
+                    <div class="col-xs-12">
+                    <h4 class="col-xs-10">Select auto suggest template
+                        <a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
+                           class="glyphicon glyphicon-info-sign info-icon"></a>
+                    </h4>
+                    </div>
+                    <div>
+                    <input type="radio" name="emotion" id="template1" class="input-hidden" ng-model="selectedtemplate.name" value="template1"/>
+                    <label for="template1">
+                        <img src="images/template1.png"/>
+                    </label>
+
+                    <input type="radio" name="emotion" id="template2" class="input-hidden" ng-model="selectedtemplate.name" value="template2"/>
+                    <label for="template2">
+                        <img class="medium-left-margin" src="images/template2.png"/>
+                    </label>
+
+                    <input type="radio" name="emotion" id="template3" class="input-hidden" ng-model="selectedtemplate.name" value="template3"/>
+                    <label for="template3">
+                        <img src="images/template3.png"/>
+                    </label>
+
+                    <input type="radio" name="emotion" id="template4" class="input-hidden" ng-model="selectedtemplate.name" value="template4"/>
+                    <label for="template4">
+                        <img class="medium-left-margin" src="images/template4.png"/>
+                    </label>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
 
