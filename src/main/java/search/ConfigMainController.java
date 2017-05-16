@@ -475,4 +475,14 @@ public class ConfigMainController {
         validationResult = dbUtils.isValidCompany(companyName);
         return validationResult;
     }
+
+
+    @RequestMapping(value = {"config/panel/{companyid}"}, method = {RequestMethod.GET})
+    public Map<String, Boolean> configPanelSetting(@PathVariable String companyid) throws IOException, URISyntaxException {
+        Map<String, Boolean> companySettings = new HashMap<>();
+        companySettings = dbUtils.getCompanySettings(Integer.parseInt(companyid));
+        return companySettings;
+    }
+
+
 }

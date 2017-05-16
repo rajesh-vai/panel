@@ -126,32 +126,32 @@
                             <p>Dashboard</p>
                         </a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="panelConfig['relevanceSettings']">
                         <a ui-sref="panel.settings.synonym">
                             <i class="fa fa-fw fa-wrench"></i>
                             <p>Relevance Settings</p>
                         </a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="panelConfig['searchMerchandising']">
                         <a ui-sref="panel.merchandising.link">
                             <i class="fa fa-fw fa-edit"></i>
                             <p>Search Merchandising</p>
                         </a>
                     </li>
 
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="panelConfig['analytics']">
                         <a ui-sref="panel.analytics">
                             <i class="fa fa-fw fa-bar-chart-o"></i>
                             <p>Analytics</p>
                         </a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="panelConfig['autosuggest']">
                         <a ui-sref="panel.autosuggest">
                             <i class="ti-zoom-in"></i>
                             <p>Auto Suggest</p>
                         </a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="panelConfig['contactus']">
                         <a ui-sref="panel.contactus">
                             <i class="ti-mobile"></i>
                             <p>Contact Support</p>

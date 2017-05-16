@@ -1,5 +1,6 @@
 package db;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.stereotype.Component;
 import search.ConfigMainController;
 import search.ReadProperties;
@@ -166,4 +167,20 @@ public class DbUtils {
         }
         return map;
     }
+
+    public Map<String, Boolean> getCompanySettings(int companyid) {
+        String qry = "Select screenname,hide FROM " + " companysettings " + " where companyid = " + companyid;
+        ResultSet rs = selectOutput(qry);
+        Map<String, Boolean> map = new HashMap();
+        try {
+            while (rs.next()) {
+                map.put(rs.getString("screenname"), rs.getBoolean("hide"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
 }
