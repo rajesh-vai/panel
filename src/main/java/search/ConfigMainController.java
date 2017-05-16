@@ -449,11 +449,20 @@ public class ConfigMainController {
         return category;
     }
 
-    @RequestMapping(value = {"autosuggestdetails/{companyid}"}, method = {RequestMethod.GET})
+    @RequestMapping(value = {"config/autosuggestdetails/{companyid}"}, method = {RequestMethod.GET})
     public Map<String, Boolean> getAutoSuggstDetails(@PathVariable String companyid) throws IOException, URISyntaxException {
         Map<String, Boolean> autoSug = new HashMap<>();
         autoSug = dbUtils.getAutoSuggestDetails(Integer.parseInt(companyid));
         return autoSug;
+    }
+
+    @RequestMapping(value = {"config/update/autosuggestconfig/{companyid}/{autosuggest}/{topqueries}/{keywordsuggestions}/{searchscope}/{selectedtemplate}"}, method = {
+            RequestMethod.POST})
+    public void addUpdateAutoSuggest(@PathVariable int companyid, @PathVariable int autosuggest, @PathVariable int topqueries, @PathVariable int keywordsuggestions, @PathVariable int searchscope, @PathVariable String selectedtemplate) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from autosuggestconfig where companyid=" + companyid);
+        String qry = "Insert into autosuggestconfig (companyid,autosuggest,topqueries,keywordsuggestions,searchscope,template) values (%s,%s,%s,%s,%s" + ",'%s')";
+        qry = String.format(qry, companyid, autosuggest, topqueries, keywordsuggestions, searchscope, selectedtemplate);
+        dbUtils.InsertUpdateData(qry);
     }
 
 

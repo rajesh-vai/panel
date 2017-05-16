@@ -133,7 +133,7 @@ public class DbUtils {
     }
 
     public Map<String, Boolean> getAutoSuggestDetails(int companyid) {
-        String qry = "Select autosuggest,topqueries,keywordsuggestions,searchscope FROM " + " autosuggestconfig " + " where companyid = " + companyid;
+        String qry = "Select autosuggest,topqueries,keywordsuggestions,searchscope,template FROM " + " autosuggestconfig " + " where companyid = " + companyid;
         qry = String.format(qry);
         ResultSet rs = selectOutput(qry);
         Map<String, Boolean> map = new HashMap();
@@ -143,6 +143,7 @@ public class DbUtils {
                 map.put("topqueries", rs.getBoolean("topqueries"));
                 map.put("keywordsuggestions", rs.getBoolean("keywordsuggestions"));
                 map.put("searchscope", rs.getBoolean("searchscope"));
+                map.put("template", rs.getBoolean("template"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

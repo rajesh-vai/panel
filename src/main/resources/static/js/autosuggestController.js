@@ -6,22 +6,28 @@ app.controller('autosuggestController', ['$scope', '$rootScope', '$http', 'Notif
         }
         var uriPrefix = _appName_+"/rest/config";
         $scope.autosuggest=true;
-        $http.get(_appName_+"/rest/autosuggestdetails/"+$rootScope.companyid).success(function(data) {
+        $http.get(uriPrefix+"/autosuggestdetails/"+$rootScope.companyid).success(function(data) {
             $scope.autosuggest = data['autosuggest'];
             $scope.topqueries = data['topqueries'];
             $scope.keywordsuggestions = data['keywordsuggestions'];
             $scope.searchscope = data['searchscope'];
+//            $scope.selectedtemplate.name = data['template'];
         });
 
         $scope.saveAutoSuggestConfigs = function() {
 
            var autoSuggestValues = {};
-           autoSuggestValues['autosuggest'] = $scope.autosuggest;
-           autoSuggestValues['topqueries'] = $scope.topqueries;
-           autoSuggestValues['keywordsuggestions'] = $scope.keywordsuggestions;
-           autoSuggestValues['searchscope'] = $scope.searchscope;
 
-            var res = $http.post(uriPrefix + '/update/autosuggestconfig/'+$rootScope.companyid, autoSuggestValues);
+           var autosuggest = $scope.autosuggest ? 1 : 0;
+           var topqueries = $scope.topqueries ? 1 : 0;
+           var keywordsuggestions  = $scope.keywordsuggestions ? 1 : 0;
+           var searchscope  = $scope.searchscope ? 1 : 0;
+           var selectedtemplate  = 'template1';
+           if($scope.selectedtemplate){
+                var selectedtemplate = $scope.selectedtemplate.name;
+           }
+
+            var res = $http.post(uriPrefix + '/update/autosuggestconfig/'+$rootScope.companyid +'/'+autosuggest +'/'+topqueries +'/'+keywordsuggestions +'/'+searchscope +'/'+selectedtemplate);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSynonym = false;
