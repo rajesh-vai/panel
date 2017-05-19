@@ -28,7 +28,7 @@ public class DbUtils {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:"+ dataBase);
             c.setAutoCommit(false);
-            stmt = c.createStatement();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -39,7 +39,9 @@ public class DbUtils {
 
     public ResultSet selectOutput(String qry) {
         ResultSet rs = null;
+
         try {
+            stmt = c.createStatement();
             rs = stmt.executeQuery(qry);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,8 +50,8 @@ public class DbUtils {
     }
 
     public boolean InsertUpdateData(String qry) {
-        Statement stmt1 = null;
         try {
+            stmt = c.createStatement();
             stmt = c.createStatement();
             stmt.executeUpdate(qry);
             c.commit();
