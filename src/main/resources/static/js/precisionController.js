@@ -1,22 +1,23 @@
-app.controller('precisionController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location', function($scope, $rootScope, $http, Notification, $state, $location) {
+app.controller('precisionController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location,$cookies) {
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
 
 
-    if (!$rootScope.validUser) {
+    if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
         $location.path('/login');
         window.location.reload();
     }
-
+$http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+$http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
     var uriPrefix = _appName_+"/rest/config";
 
-    $http.get(_appName_+"/rest/categories/"+$rootScope.companyid).success(function(data) {
+    $http.get(_appName_+"/rest/categories/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.categories = data;
     });
 
 
-    $http.get(uriPrefix + '/precision/'+$rootScope.companyid).success(function(data) {
+    $http.get(uriPrefix + '/precision/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.precisionMap= data;
     });
 
@@ -31,7 +32,7 @@ app.controller('precisionController', ['$scope', '$rootScope', '$http', 'Notific
         var category = $scope.selectedCategory;
         var updatedValue = {};
         updatedValue[category] = precision ;
-        var res = $http.post(uriPrefix + '/update/precision/'+$rootScope.companyid+'/'+category +'/'+ precision);
+        var res = $http.post(uriPrefix + '/update/precision/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+category +'/'+ precision);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $state.go('panel.settings.precision');

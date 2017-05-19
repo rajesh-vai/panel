@@ -1,18 +1,21 @@
-app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location', function($scope, $rootScope, $http, Notification, $state, $location) {
+app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location,$cookies) {
     $scope.headingTitle = "User List";
     $scope.key = '';
     $scope.spellings = '';
-   if (!$rootScope.validUser) {
+   if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
         $location.path('/login');
         window.location.reload();
     }
+
+    $http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+    $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
 
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
 
     var uriPrefix = _appName_+"/rest/config";
-    $http.get(uriPrefix + '/spellings/'+$rootScope.companyid).success(function(data) {
+    $http.get(uriPrefix + '/spellings/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.concatenatedSpellings = data;
     });
 
@@ -29,7 +32,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
                                 }
         var updatedValue = {};
                         updatedValue[$scope.key] = $scope.spellings;
-            var res = $http.post(uriPrefix + '/add/spellings/'+$rootScope.companyid, updatedValue);
+            var res = $http.post(uriPrefix + '/add/spellings/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSpelling = false;
@@ -51,7 +54,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
         }
         var updatedValue = {};
         updatedValue[spellingKey] = concatenatedValues;
-        var res = $http.post(uriPrefix + '/update/spellings/'+$rootScope.companyid, updatedValue);
+        var res = $http.post(uriPrefix + '/update/spellings/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $scope.openAddSpelling = false;
@@ -67,7 +70,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
 
     $scope.deleteSpelling = function(spellingKey) {
 
-            var res = $http.post(uriPrefix + '/delete/spellings/'+$rootScope.companyid,spellingKey);
+            var res = $http.post(uriPrefix + '/delete/spellings/'+$cookies.get('fgt45hi7hfturtyrfgh'),spellingKey);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSpelling = false;

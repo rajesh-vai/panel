@@ -1,9 +1,9 @@
-app.controller('sortingConfigController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location', function($scope, $rootScope, $http, Notification, $state, $location) {
+app.controller('sortingConfigController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location, $cookies) {
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
 
-    /*if (!$rootScope.validUser) {
+    /*if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
         $location.path('/login');
         window.location.reload();
     }*/

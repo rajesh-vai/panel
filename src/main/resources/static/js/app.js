@@ -2,7 +2,7 @@
 _appName_ = "/newui";
 //
 
-var app = angular.module('app', ['ui.bootstrap','ui.toggle','ui.router','appDirectives','AngularChart','ui-notification','dndLists']);
+var app = angular.module('app', ['ui.bootstrap','ui.toggle','ui.router','appDirectives','AngularChart','ui-notification','dndLists','ngCookies']);
 
 
 app.config(function($stateProvider, $urlRouterProvider) {

@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -480,7 +481,10 @@ public class ConfigMainController {
     @RequestMapping(value = {"config/panel/{companyid}"}, method = {RequestMethod.GET})
     public Map<String, Boolean> configPanelSetting(@PathVariable String companyid) throws IOException, URISyntaxException {
         Map<String, Boolean> companySettings = new HashMap<>();
-        companySettings = dbUtils.getCompanySettings(Integer.parseInt(companyid));
+        if(!StringUtils.isEmpty(companyid)){
+            companySettings = dbUtils.getCompanySettings(Integer.parseInt(companyid));
+        }
+
         return companySettings;
     }
 

@@ -1,4 +1,4 @@
-app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location', function($scope, $rootScope, $http, Notification, $state, $location) {
+app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location,$cookies) {
 
     $scope.key = '';
     $scope.links = '';
@@ -6,13 +6,16 @@ app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
 
-    if (!$rootScope.validUser) {
+    if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
         $location.path('/login');
         window.location.reload();
     }
 
+    $http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+    $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
     var uriPrefix = _appName_+"/rest/config";
-    $http.get(uriPrefix + '/links/'+$rootScope.companyid).success(function(data) {
+    $http.get(uriPrefix + '/links/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.concatenatedLinks = data;
     });
 
@@ -28,7 +31,7 @@ app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification
             Notification.error('Only numbers and alpha letters are allowed');
             return false;
         }*/
-        var res = $http.post(uriPrefix + '/add/links/'+$rootScope.companyid, updatedValue);
+        var res = $http.post(uriPrefix + '/add/links/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $scope.openAddLinks = false;
@@ -51,7 +54,7 @@ app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification
             Notification.error('Only numbers and alpha letters are allowed');
             return false;
         }*/
-        var res = $http.post(uriPrefix + '/update/links/'+$rootScope.companyid, updatedValue);
+        var res = $http.post(uriPrefix + '/update/links/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $scope.openAddLinks = false;
@@ -66,7 +69,7 @@ app.controller('linkController', ['$scope', '$rootScope', '$http', 'Notification
     }
 
     $scope.deleteLink = function(linkKey) {
-        var res = $http.post(uriPrefix + '/delete/links/'+$rootScope.companyid, linkKey);
+        var res = $http.post(uriPrefix + '/delete/links/'+$cookies.get('fgt45hi7hfturtyrfgh'), linkKey);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $scope.openAddLinks = false;

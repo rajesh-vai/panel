@@ -1,9 +1,13 @@
-app.controller('merchandisingController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state',
- function($scope, $rootScope, $http, Notification, $location, $state) {
-if (!$rootScope.validUser) {
+app.controller('merchandisingController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state','$cookies',
+ function($scope, $rootScope, $http, Notification, $location, $state,$cookies) {
+if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
     $location.path('/login');
     window.location.reload();
 }
+
+$http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+$http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
   $scope.tabs = [
     { title:'Query to URL Redirect', route: 'panel.merchandising.link' },
     { title:'Rank By Product', route: 'panel.merchandising.rank' },

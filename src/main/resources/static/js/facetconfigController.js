@@ -1,11 +1,15 @@
-app.controller('facetconfigController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state', function($scope, $rootScope, $http, Notification, $location, $state) {
+app.controller('facetconfigController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state','$cookies', function($scope, $rootScope, $http, Notification, $location, $state,$cookies) {
         $scope.contact = {};
-if (!$rootScope.validUser) {
+if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
     $location.path('/login');
     window.location.reload();
 }
+
+$http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+$http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
 var uriPrefix = _appName_+"/rest/config";
-    $http.get(_appName_+"/rest/categories/"+$rootScope.companyid).success(function(data) {
+    $http.get(_appName_+"/rest/categories/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.categories = data;
     });
  $scope.models = {

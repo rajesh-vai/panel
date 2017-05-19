@@ -1,14 +1,17 @@
-app.controller('rankController', ['$scope', '$rootScope', '$http', 'Notification', '$location', function($scope, $rootScope, $http, Notification, $location) {
+app.controller('rankController', ['$scope', '$rootScope', '$http', 'Notification', '$location','$cookies', function($scope, $rootScope, $http, Notification, $location,$cookies) {
     $scope.key = '';
     $scope.synonyms = '';
     $scope.showSpinner = false;
-if (!$rootScope.validUser) {
+if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
     $location.path('/login');
     window.location.reload();
 }
 
+$http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+$http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
     var uriPrefix = _appName_+"/rest/config";
-    $http.get(_appName_+"/rest/categories/"+$rootScope.companyid).success(function(data) {
+    $http.get(_appName_+"/rest/categories/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.categories = data;
     });
     $scope.filter = function(filterText) {
@@ -44,7 +47,7 @@ if (!$rootScope.validUser) {
 
     $scope.updateDetails = function(updatedProductId,rank,category) {
         $scope.showSpinner = true;
-        var res = $http.post(uriPrefix + '/update/rankbyproduct/'+$rootScope.companyid+'/'+rank+'/'+updatedProductId , category);
+        var res = $http.post(uriPrefix + '/update/rankbyproduct/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+rank+'/'+updatedProductId , category);
         res.success(function(data, status, headers, config) {
             Notification.success('Update successful');
             $scope.showSpinner = false;

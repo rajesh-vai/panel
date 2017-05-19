@@ -1,12 +1,15 @@
-app.controller('autosuggestController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state', function($scope, $rootScope, $http, Notification, $location, $state) {
+app.controller('autosuggestController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state','$cookies', function($scope, $rootScope, $http, Notification, $location, $state,$cookies) {
         $scope.contact = {};
-        if (!$rootScope.validUser) {
+        if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
             $location.path('/login');
             window.location.reload();
         }
+        $http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+        $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
         var uriPrefix = _appName_+"/rest/config";
         $scope.autosuggest=true;
-        $http.get(uriPrefix+"/autosuggestdetails/"+$rootScope.companyid).success(function(data) {
+        $http.get(uriPrefix+"/autosuggestdetails/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
             $scope.autosuggest = data['autosuggest'];
             $scope.topqueries = data['topqueries'];
             $scope.keywordsuggestions = data['keywordsuggestions'];
@@ -27,7 +30,7 @@ app.controller('autosuggestController', ['$scope', '$rootScope', '$http', 'Notif
                 var selectedtemplate = $scope.selectedtemplate.name;
            }
 
-            var res = $http.post(uriPrefix + '/update/autosuggestconfig/'+$rootScope.companyid +'/'+autosuggest +'/'+topqueries +'/'+keywordsuggestions +'/'+searchscope +'/'+selectedtemplate);
+            var res = $http.post(uriPrefix + '/update/autosuggestconfig/'+$cookies.get('fgt45hi7hfturtyrfgh') +'/'+autosuggest +'/'+topqueries +'/'+keywordsuggestions +'/'+searchscope +'/'+selectedtemplate);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSynonym = false;

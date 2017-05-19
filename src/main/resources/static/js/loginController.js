@@ -1,4 +1,4 @@
-app.controller('loginController', [ '$scope', '$rootScope' , '$http', '$location', function($scope,$rootScope, $http, $location) {
+app.controller('loginController', [ '$scope', '$rootScope' , '$http', '$location' ,'$cookies', function($scope,$rootScope, $http, $location,$cookies) {
 	console.log("Login Controller");
     $scope.showlogin = true;
     $scope.companyName = undefined;
@@ -14,8 +14,10 @@ app.controller('loginController', [ '$scope', '$rootScope' , '$http', '$location
                 return false;
                 }
 
-                $rootScope.validUser = true;
+
                 $rootScope.companyid=data['companyid'];
+
+                $cookies.put('fgt45hi7hfturtyrfgh', data['companyid']);
 
                 $http.get(_appName_+"/rest/logourl/"+$rootScope.companyid).success(function(data) { $rootScope.logourl = data['logo'];});
                 $http.get(_appName_ + '/rest/config/panel/'+$rootScope.companyid).success(function(data) { $rootScope.panelConfig = data;});

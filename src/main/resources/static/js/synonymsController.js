@@ -1,18 +1,22 @@
-app.controller('synonymController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state', function($scope, $rootScope, $http, Notification, $location, $state) {
+app.controller('synonymController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state','$cookies', function($scope, $rootScope, $http, Notification, $location, $state,$cookies) {
     $scope.headingTitle = "User List";
     $scope.key = '';
     $scope.synonyms = '';
     $scope.regex = /^[a-zA-Z0-9 ._-]+$/;
-   if (!$rootScope.validUser) {
+   if (!$cookies.get('fgt45hi7hfturtyrfgh')) {
        $location.path('/login');
        window.location.reload();
    }
+
+   $http.get(_appName_+"/rest/logourl/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.logourl = data['logo'];});
+   $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) { $rootScope.panelConfig = data;});
+
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
 
     var uriPrefix = _appName_+"/rest/config";
-    $http.get(uriPrefix + '/synonyms/'+$rootScope.companyid).success(function(data) {
+    $http.get(uriPrefix + '/synonyms/'+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.concatenatedSynonyms = data;
     });
 
@@ -28,7 +32,7 @@ app.controller('synonymController', ['$scope', '$rootScope', '$http', 'Notificat
                     Notification.error('Only numbers and alpha letters are allowed');
                     return false;
                 }
-            var res = $http.post(uriPrefix + '/add/synonyms/'+$rootScope.companyid, updatedValue);
+            var res = $http.post(uriPrefix + '/add/synonyms/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSynonym = false;
@@ -50,7 +54,7 @@ app.controller('synonymController', ['$scope', '$rootScope', '$http', 'Notificat
             Notification.error('Only numbers and alpha letters are allowed');
             return false;
         }
-        var res = $http.post(uriPrefix + '/update/synonyms/'+$rootScope.companyid, updatedValue);
+        var res = $http.post(uriPrefix + '/update/synonyms/'+$cookies.get('fgt45hi7hfturtyrfgh'), updatedValue);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $scope.openAddSynonym = false;
@@ -66,7 +70,7 @@ app.controller('synonymController', ['$scope', '$rootScope', '$http', 'Notificat
 
     $scope.deleteSynonym = function(synonymKey) {
 
-            var res = $http.post(uriPrefix + '/delete/synonyms/'+$rootScope.companyid, synonymKey);
+            var res = $http.post(uriPrefix + '/delete/synonyms/'+$cookies.get('fgt45hi7hfturtyrfgh'), synonymKey);
             res.success(function(data, status, headers, config) {
                 $scope.message = data;
                 $scope.openAddSynonym = false;
