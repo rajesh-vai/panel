@@ -1150,3 +1150,9 @@ html {
  .ui-notification.killed{
  display: none; !important;
  }
+
+ .tooltip-inner {
+   white-space:nowrap;
+   max-width:none;
+   background-color: #337ab7;
+ }
