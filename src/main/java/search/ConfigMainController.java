@@ -15,7 +15,11 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +41,12 @@ public class ConfigMainController {
     @Inject
     ApplicationContext context;
     ReadProperties properties = new ReadProperties();
+
+    @Autowired
+    MailSender mailSender;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     //	@Value("${resourceLocation}")
     public String resourceLocation = properties.getPropValues("RESOURCES_LOCATION");
@@ -489,4 +499,31 @@ public class ConfigMainController {
     }
 
 
+    //Email support
+    @RequestMapping(value = {"send/email/{companyid}"}, method = {
+            RequestMethod.POST})
+    public void sendMail(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        SimpleMailMessage message = new SimpleMailMessage();
+        String subject ="",body="";
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            String key = entry.getKey();
+            if (entry.getKey().equals("subject")) {
+                subject = entry.getValue();
+            }
+            if (entry.getKey().equals("message")) {
+                body = entry.getValue();
+            }
+        }
+
+        message.setSubject(subject);
+        message.setText(body);
+        message.setTo("rajesh.vairamani@gmail.com");
+        message.setFrom("query@seeknshop.io");
+        try {
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }
