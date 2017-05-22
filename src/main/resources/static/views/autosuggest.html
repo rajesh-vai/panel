@@ -20,7 +20,7 @@
                     </p>
                 </div>
                 <div class="col-xs-2">
-                    <toggle ng-model="autosuggest" size="btn-xs"></toggle>
+                    <toggle ng-model="autosuggest" size="btn-xs" ng-click="updateOtherAutosuggets();"></toggle>
                 </div>
 
             </div>
@@ -36,8 +36,8 @@
                         Enable to display top performing search queries
                     </p>
                 </div>
-                <div class="col-xs-2">
-                    <toggle ng-model="topqueries" size="btn-xs"></toggle>
+                <div class="col-xs-2" >
+                    <toggle ng-model="topqueries" ng-click="resetAutoSuggest(topqueries)" size="btn-xs"></toggle>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                     </p>
                 </div>
                 <div class="col-xs-2">
-                    <toggle ng-model="keywordsuggestions" size="btn-xs"></toggle>
+                    <toggle ng-model="keywordsuggestions" ng-click="resetAutoSuggest(keywordsuggestions)" size="btn-xs"></toggle>
                 </div>
 
             </div>
@@ -72,7 +72,7 @@
                     </p>
                 </div>
                 <div class="col-xs-2">
-                    <toggle ng-model="searchscope" size="btn-xs"></toggle>
+                    <toggle ng-model="searchscope"  ng-click="resetAutoSuggest(searchscope)" size="btn-xs"></toggle>
                 </div>
             </div>
         </div>

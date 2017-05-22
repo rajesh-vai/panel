@@ -41,6 +41,22 @@ app.controller('autosuggestController', ['$scope', '$rootScope', '$http', 'Notif
             res.error(function(data, status, headers, config) {
                 Notification.error('Error in deleting synonym');
             });
+        };
+
+
+        $scope.updateOtherAutosuggets = function(){
+            if(!$scope.autosuggest){
+                $scope.topqueries = false;
+                $scope.keywordsuggestions = false;
+                $scope.searchscope = false;
+            }
         }
+
+        $scope.resetAutoSuggest = function(reset){
+            if(reset){
+                $scope.autosuggest = true;
+            }
+        }
+
 }]);
 
