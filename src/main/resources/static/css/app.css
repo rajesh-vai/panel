@@ -1080,8 +1080,8 @@ input[type=radio] + label>img {
 
 input[type=radio]:checked + label>img {
   transform:
-    rotateZ(-10deg)
-    rotateX(10deg);
+    rotateZ(-0deg)
+    rotateX(0deg);
 }
 
 /*
