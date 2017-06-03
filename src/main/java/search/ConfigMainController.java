@@ -56,6 +56,7 @@ public class ConfigMainController {
     String elasticDbUrl = properties.getPropValues("ELASTIC_URL");
     public String searchUrl = properties.getPropValues("SEARCH_URL");
     public String dataBase = properties.getPropValues("DATABASE");
+    public String indexname = properties.getPropValues("INDEXNAME");
 
     public void setSearchUrl(String searchUrl) {
         this.searchUrl = searchUrl;
@@ -68,80 +69,6 @@ public class ConfigMainController {
         this.dbUtils = dbUtils;
     }
 
-
-    @RequestMapping(value = "config/updateJson", method = RequestMethod.POST)
-    public void update(@RequestBody List<Map> result) throws IOException, URISyntaxException {
-
-        File file = new File(resourceLocation, "/rank.json");
-
-        List<String> allLines = FileUtils.readLines(file);
-        List<String> updatedLines = result.stream().map(res -> new Gson().toJson(res)).collect(Collectors.toList());
-
-        ///popularity update
-        JsonObject uObj = Json.parse(updatedLines.get(0)).asObject();
-
-        String qWord = uObj.get("ns1_product_type").asString();
-        qWord = qWord.substring(qWord.lastIndexOf(">") + 1);
-        Document doc = Jsoup.connect(searchUrl + warName + "/" + "search?query=" + qWord).ignoreContentType(true)
-                .get();
-        JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
-
-        JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
-
-        long rank = Long.parseLong(uObj.get("rank").toString().replaceAll("\"", ""));
-
-        if (resultsArray.size() > rank) {
-            if (rank == 1) {
-                System.out.println("=========== : " + rank);
-                double popularity_1 = resultsArray.get((int) (rank - 1)).asObject().get("_source").asObject().get("popularity").asDouble();
-                System.out.println("=========== : " + popularity_1);
-                uObj.set("popularity", (popularity_1 + 0.00005));
-            } else if (rank > 1) {
-                System.out.println("=========== : " + rank);
-                double popularity_1 = resultsArray.get((int) (rank - 1)).asObject().get("_source").asObject().get("popularity").asDouble();
-                System.out.println("=========== : " + popularity_1);
-                double popularity_2 = resultsArray.get((int) (rank - 2)).asObject().get("_source").asObject().get("popularity").asDouble();
-                System.out.println("=========== : " + popularity_2);
-                uObj.set("popularity", ((popularity_1 + popularity_2) / 2.0));
-
-            }
-        }
-
-        updatedLines.clear();
-        updatedLines.add(uObj.toString());
-        ///
-
-
-        List<String> outputLines = new ArrayList<>();
-        if (allLines.size() <= 0) {
-            for (String uLine : updatedLines) {
-                outputLines.add(uLine);
-            }
-        } else {
-            // Assuming, will get one line per update...
-            String updatedLine = updatedLines.get(0);
-            JSONObject uobject = new JSONObject(updatedLine);
-            String upid = uobject.get("ns1_id").toString();
-
-            Boolean uLineAdded = false;
-            for (String line : allLines) {
-                JSONObject object = new JSONObject(line);
-                String pid = object.get("ns1_id").toString();
-
-                if (pid.equals(upid)) {
-                    outputLines.add(updatedLine);
-                    uLineAdded = true;
-                } else {
-                    outputLines.add(line);
-                }
-            }
-            if (uLineAdded == false) {
-                outputLines.add(updatedLine);
-            }
-        }
-        FileUtils.writeLines(file, outputLines);
-        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
-    }
 
     @RequestMapping(value = "config/filter/{filterText}", method = RequestMethod.GET)
     public List<String> filterById(@PathVariable String filterText) throws IOException, URISyntaxException {
@@ -169,7 +96,7 @@ public class ConfigMainController {
     @RequestMapping(value = "config/filterByKey/{filterText}", method = RequestMethod.GET)
     public List<String> filterByKey(@PathVariable String filterText) throws IOException, URISyntaxException {
 
-        Document doc = Jsoup.connect(searchUrl + warName + "/" + "search?query=" + filterText).ignoreContentType(true)
+        Document doc = Jsoup.connect(searchUrl + indexname + "/" + "search?query=" + filterText).ignoreContentType(true)
                 .get();
         JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
@@ -204,7 +131,7 @@ public class ConfigMainController {
     public void addSynonmys(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "synonyms", "keyword", "synonyms");
         dbUtils.InsertUpdateData(insertQry);
-        /*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+        Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -213,7 +140,7 @@ public class ConfigMainController {
     public void updateSynonmys(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "synonyms", "keyword", "synonyms");
         dbUtils.InsertUpdateData(updateQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -222,7 +149,7 @@ public class ConfigMainController {
     public void deleteSynonmys(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
         String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "synonyms", "keyword");
         dbUtils.InsertUpdateData(updateQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -243,7 +170,7 @@ public class ConfigMainController {
     public void addSpellings(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "spellcheck", "keyword", "spellings");
         dbUtils.InsertUpdateData(insertQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -252,7 +179,7 @@ public class ConfigMainController {
     public void updatesSpellings(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "spellcheck", "keyword", "spellings");
         dbUtils.InsertUpdateData(updateQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -261,7 +188,7 @@ public class ConfigMainController {
     public void deleteSpellings(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
         String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "spellcheck", "keyword");
         dbUtils.InsertUpdateData(updateQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -281,7 +208,7 @@ public class ConfigMainController {
     public void addLinks(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "querytoredirect", "keyword", "url");
         dbUtils.InsertUpdateData(insertQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -291,7 +218,7 @@ public class ConfigMainController {
         String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "querytoredirect", "keyword", "url");
         dbUtils.InsertUpdateData(updateQry);
 
-//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -300,7 +227,7 @@ public class ConfigMainController {
     public void deleteLinks(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
         String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "querytoredirect", "keyword");
         dbUtils.InsertUpdateData(updateQry);
-		/*Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();*/
+		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
     }
 
     //query code ends
@@ -314,7 +241,7 @@ public class ConfigMainController {
         String qry = "INSERT INTO noise (CompanyID, noise ) values (" + Integer.parseInt(companyid) + ",'%s')";
         qry = String.format(qry, data);
         dbUtils.InsertUpdateData(qry);
-//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
 
     }
 
@@ -517,7 +444,7 @@ public class ConfigMainController {
 
         message.setSubject(subject);
         message.setText(body);
-        message.setTo("rajesh.vairamani@gmail.com");
+        message.setTo("info@seeknshop.io");
         message.setFrom("query@seeknshop.io");
         try {
             javaMailSender.send(message);
