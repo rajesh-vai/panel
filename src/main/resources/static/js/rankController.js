@@ -14,9 +14,17 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
     $http.get(_appName_+"/rest/categories/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
         $scope.categories = data;
     });
-    $scope.filter = function(filterText) {
+    $scope.filter = function(filterText,selectedCategory) {
+
+        if(!filterText && !selectedCategory){
+            Notification.error('Select either a category or specify the product id');
+            return false;
+        }
         $scope.showSpinner = true;
-        var url = uriPrefix + "/filter/" + filterText;
+        if(selectedCategory && !filterText){
+            filterText="dummy";
+        }
+        var url = uriPrefix + "/filter/" + filterText+"/" +selectedCategory;
 
         $http.get(url).success(function(data) {
             console.log(data);
