@@ -17,17 +17,23 @@ import java.util.Map;
 
 @Component
 public class DbUtils {
-    Connection c = null;
+    static Connection c = null;
     Statement stmt = null;
     ReadProperties properties = new ReadProperties();
 
     public String dataBase = properties.getPropValues("DATABASE");
+    private static DbUtils instance = null;
+
     public DbUtils() throws IOException {
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:"+ dataBase);
-            c.setAutoCommit(false);
+            if (c != null) {
+
+            } else {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite:" + dataBase);
+                c.setAutoCommit(false);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -35,6 +41,12 @@ public class DbUtils {
             e.printStackTrace();
         }
 
+    }
+
+    public static DbUtils instance(String inputPath) throws Exception {
+        if (instance == null)
+            instance = new DbUtils();
+        return instance;
     }
 
     public ResultSet selectOutput(String qry) {

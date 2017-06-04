@@ -70,33 +70,50 @@ public class ConfigMainController {
     }
 
 
-    @RequestMapping(value = "config/filter/{filterText}", method = RequestMethod.GET)
-    public List<String> filterById(@PathVariable String filterText) throws IOException, URISyntaxException {
+    @RequestMapping(value = "config/filter/{filterText}/{selectedCategory}", method = RequestMethod.GET)
+    public List<String> filterById(@PathVariable String filterText,@PathVariable String selectedCategory) throws IOException, URISyntaxException {
 
         //		Document doc = Jsoup.connect(
         //				elasticDbUrl + "_sql?sql=select * from martjack_fabindia where ns1_id='" + filterText + "' LIMIT 25")
         //				.ignoreContentType(true).get();
-        Document doc = Jsoup.connect(
-                elasticDbUrl + "_search?q=pid:" + filterText)
-                .ignoreContentType(true).get();
-        JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
-
-        JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
-
         List<String> outputLines = new ArrayList<>();
+        if(filterText.length() > 0) {
+            Document doc = Jsoup.connect(
+                    elasticDbUrl + indexname + "/_search?q=pid:" + filterText)
+                    .ignoreContentType(true).get();
+            JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
-        for (int j = 0; j < resultsArray.size(); j++) {
-            JsonValue record = resultsArray.get(j).asObject().get("_source");
-            outputLines.add(record.toString());
+            JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
+
+
+
+            for (int j = 0; j < resultsArray.size(); j++) {
+                JsonValue record = resultsArray.get(j).asObject().get("_source");
+                outputLines.add(record.toString());
+            }
         }
+        if(selectedCategory.length() > 0) {
+            Document doc = Jsoup.connect(
+                    elasticDbUrl + indexname + "/_search?q=category:" + selectedCategory)
+                    .ignoreContentType(true).get();
+            JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
+            JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
+
+
+
+            for (int j = 0; j < resultsArray.size(); j++) {
+                JsonValue record = resultsArray.get(j).asObject().get("_source");
+                outputLines.add(record.toString());
+            }
+        }
         return outputLines;
     }
 
     @RequestMapping(value = "config/filterByKey/{filterText}", method = RequestMethod.GET)
     public List<String> filterByKey(@PathVariable String filterText) throws IOException, URISyntaxException {
 
-        Document doc = Jsoup.connect(searchUrl + indexname + "/" + "search?query=" + filterText).ignoreContentType(true)
+        Document doc = Jsoup.connect(searchUrl + warName + "/" + "search?query=" + filterText).ignoreContentType(true)
                 .get();
         JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
@@ -119,8 +136,8 @@ public class ConfigMainController {
     //Synonyms code
     @RequestMapping(value = {"config/synonyms/{companyid}"}, method = {
             RequestMethod.GET})
-    public Map getSynonyms(@PathVariable String companyid) throws IOException, URISyntaxException {
-        String qry = "Select keyword,synonyms from synonyms where companyid=" + Integer.parseInt(companyid);
+    public Map getSynonyms(@PathVariable int companyid) throws IOException, URISyntaxException {
+        String qry = "Select keyword,synonyms from synonyms where companyid=" + companyid;
         ResultSet rs = dbUtils.selectOutput(qry);
         Map map = dbUtils.convertResultSetToHashMap(rs, "keyword", "synonyms");
         return map;
@@ -128,8 +145,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/add/synonyms/{companyid}"}, method = {
             RequestMethod.POST})
-    public void addSynonmys(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "synonyms", "keyword", "synonyms");
+    public void addSynonmys(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String insertQry = dbUtils.convertMapToQueryForAdd(data,companyid, "synonyms", "keyword", "synonyms");
         dbUtils.InsertUpdateData(insertQry);
         Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -137,8 +154,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/synonyms/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updateSynonmys(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "synonyms", "keyword", "synonyms");
+    public void updateSynonmys(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.convertMapToQueryForUpdate(data,companyid, "synonyms", "keyword", "synonyms");
         dbUtils.InsertUpdateData(updateQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -146,8 +163,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/delete/synonyms/{companyid}"}, method = {
             RequestMethod.POST})
-    public void deleteSynonmys(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "synonyms", "keyword");
+    public void deleteSynonmys(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.queryForDelete(data,companyid, "synonyms", "keyword");
         dbUtils.InsertUpdateData(updateQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -167,8 +184,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/add/spellings/{companyid}"}, method = {
             RequestMethod.POST})
-    public void addSpellings(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "spellcheck", "keyword", "spellings");
+    public void addSpellings(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String insertQry = dbUtils.convertMapToQueryForAdd(data,companyid, "spellcheck", "keyword", "spellings");
         dbUtils.InsertUpdateData(insertQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -176,8 +193,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/spellings/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updatesSpellings(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "spellcheck", "keyword", "spellings");
+    public void updatesSpellings(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.convertMapToQueryForUpdate(data,companyid, "spellcheck", "keyword", "spellings");
         dbUtils.InsertUpdateData(updateQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -185,8 +202,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/delete/spellings/{companyid}"}, method = {
             RequestMethod.POST})
-    public void deleteSpellings(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "spellcheck", "keyword");
+    public void deleteSpellings(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.queryForDelete(data,companyid, "spellcheck", "keyword");
         dbUtils.InsertUpdateData(updateQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -197,16 +214,16 @@ public class ConfigMainController {
 
     //query code
     @RequestMapping(value = {"config/links/{companyid}"}, method = {RequestMethod.GET})
-    public Map getLinks(@PathVariable String companyid) throws IOException, URISyntaxException {
-        String qry = "Select keyword,url from querytoredirect where companyid=" + Integer.parseInt(companyid);
+    public Map getLinks(@PathVariable int companyid) throws IOException, URISyntaxException {
+        String qry = "Select keyword,url from querytoredirect where companyid=" + companyid;
         ResultSet rs = dbUtils.selectOutput(qry);
         Map map = dbUtils.convertResultSetToHashMap(rs, "keyword", "url");
         return map;
     }
 
     @RequestMapping(value = {"config/add/links/{companyid}"}, method = {RequestMethod.POST})
-    public void addLinks(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String insertQry = dbUtils.convertMapToQueryForAdd(data,Integer.parseInt(companyid), "querytoredirect", "keyword", "url");
+    public void addLinks(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String insertQry = dbUtils.convertMapToQueryForAdd(data,companyid, "querytoredirect", "keyword", "url");
         dbUtils.InsertUpdateData(insertQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
 
@@ -214,8 +231,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/links/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updateLinks(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.convertMapToQueryForUpdate(data,Integer.parseInt(companyid), "querytoredirect", "keyword", "url");
+    public void updateLinks(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.convertMapToQueryForUpdate(data,companyid, "querytoredirect", "keyword", "url");
         dbUtils.InsertUpdateData(updateQry);
 
         Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
@@ -224,8 +241,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/delete/links/{companyid}"}, method = {
             RequestMethod.POST})
-    public void deleteLinks(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
-        String updateQry = dbUtils.queryForDelete(data,Integer.parseInt(companyid), "querytoredirect", "keyword");
+    public void deleteLinks(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
+        String updateQry = dbUtils.queryForDelete(data,companyid, "querytoredirect", "keyword");
         dbUtils.InsertUpdateData(updateQry);
 		Jsoup.connect(searchUrl+warName+"/" + "watcher/update").ignoreContentType(true).get();
     }
@@ -236,9 +253,9 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/stopwords/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updateStopwords(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
-        dbUtils.InsertUpdateData("delete from noise where companyid="+Integer.parseInt(companyid));
-        String qry = "INSERT INTO noise (CompanyID, noise ) values (" + Integer.parseInt(companyid) + ",'%s')";
+    public void updateStopwords(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from noise where companyid="+companyid);
+        String qry = "INSERT INTO noise (CompanyID, noise ) values (" + companyid + ",'%s')";
         qry = String.format(qry, data);
         dbUtils.InsertUpdateData(qry);
         Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
@@ -247,8 +264,8 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/stopwords/{companyid}"}, method = {
             RequestMethod.GET})
-    public List<String> getStopwords(@PathVariable String companyid) throws IOException, URISyntaxException, SQLException {
-        String qry = "Select noise from noise where companyid=" +Integer.parseInt(companyid);
+    public List<String> getStopwords(@PathVariable int companyid) throws IOException, URISyntaxException, SQLException {
+        String qry = "Select noise from noise where companyid=" +companyid;
         ResultSet rs = dbUtils.selectOutput(qry);
         return Arrays.asList(rs.getString("noise").split(","));
     }
@@ -259,7 +276,7 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/sortorder/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updateSortOrder(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
+    public void updateSortOrder(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
         JSONObject uobject = new JSONObject(data);
         String uCategory = uobject.get("category").toString();
         String uSort = uobject.get("sort").toString();
@@ -292,7 +309,7 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/sortorder/{companyid}"}, method = {
             RequestMethod.GET})
-    public List<String> getSortOrder(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public List<String> getSortOrder(@PathVariable int companyid) throws IOException, URISyntaxException {
         File file = new File(resourceLocation, "/sortconfig.json");
         List<String> lines = FileUtils.readLines(file);
         return lines;
@@ -301,9 +318,9 @@ public class ConfigMainController {
     // Precision Configuration
     @RequestMapping(value = {"config/precision/{companyid}"}, method = {
             RequestMethod.GET})
-    public Map<String, String> getPrecision(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public Map<String, String> getPrecision(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, String> precision = new HashMap<>();
-        String qry = "Select categoryname,precision from precision where companyid=" +Integer.parseInt(companyid);
+        String qry = "Select categoryname,precision from precision where companyid=" +companyid;
         ResultSet rs = dbUtils.selectOutput(qry);
         try {
             while (rs.next()) {
@@ -318,23 +335,24 @@ public class ConfigMainController {
 
 @RequestMapping(value = {"config/update/precision/{companyid}/{category}/{precision}"}, method = {
             RequestMethod.POST})
-    public void updatePrecision(@PathVariable String companyid, @PathVariable String category, @PathVariable String precision) throws IOException, URISyntaxException {
+    public void updatePrecision(@PathVariable int companyid, @PathVariable String category, @PathVariable String precision) throws IOException, URISyntaxException {
 
-        dbUtils.InsertUpdateData("delete from precision where companyid=" + Integer.parseInt(companyid) + "and categoryname = '" + category + "'");
-        String qry = "INSERT INTO precision (CompanyID, categoryname, precision) values (" + Integer.parseInt(companyid) + ",'%s'," + Integer.parseInt(precision) + ")";
+        dbUtils.InsertUpdateData("delete from precision where companyid=" + companyid + " and categoryname = '" + category + "'");
+        String qry = "INSERT INTO precision (CompanyID, categoryname, precision) values (" + companyid + ",'%s'," + Integer.parseInt(precision) + ")";
         qry = String.format(qry, category);
         dbUtils.InsertUpdateData(qry);
 
-//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+//        Jsoup.connect(searchUrl + warName + "/" + "rest/config/precision/"+companyid+"").ignoreContentType(true).get();
 
     }
     // End of Precision Configuration
 
     @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}"}, method = {
             RequestMethod.POST})
-    public void updateRankByKey(@PathVariable String companyid,@PathVariable String rank,@RequestBody String data) throws IOException, URISyntaxException {
-        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+Integer.parseInt(companyid) + " and productid =" +Integer.parseInt(data));
-        String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + Integer.parseInt(companyid) + "," + Integer.parseInt(data) + "," + Integer.parseInt(rank) + ")";
+    public void updateRankByKey(@PathVariable int companyid,@PathVariable String rank,@RequestBody String data) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+companyid + " and productid =" +Integer.parseInt(data));
+        String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + companyid + "," + Integer.parseInt(data) + "," + Integer.parseInt(rank) + ")";
         dbUtils.InsertUpdateData(qry);
 
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
@@ -343,9 +361,9 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/rankbyproduct/{companyid}/{rank}/{productid}"}, method = {
             RequestMethod.POST})
-    public void updateRankByProduct(@PathVariable String companyid, @PathVariable String rank, @PathVariable int productid, @RequestBody String category) throws IOException, URISyntaxException {
-        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + Integer.parseInt(companyid) + " and productid =" + productid + " and categoryname ='" + category + "'");
-        String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + Integer.parseInt(companyid) + "," + productid + "," + Integer.parseInt(rank) + ",'%s')";
+    public void updateRankByProduct(@PathVariable int companyid, @PathVariable String rank, @PathVariable int productid, @RequestBody String category) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + companyid + " and productid =" + productid + " and categoryname ='" + category + "'");
+        String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + companyid + "," + productid + "," + Integer.parseInt(rank) + ",'%s')";
         qry = String.format(qry, category);
         dbUtils.InsertUpdateData(qry);
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
@@ -357,7 +375,7 @@ public class ConfigMainController {
     //Rank code ends
     @RequestMapping(value = {"config/update/filters/{companyid}"}, method = {
             RequestMethod.POST})
-    public void updateFilters(@PathVariable String companyid,@RequestBody String data) throws IOException, URISyntaxException {
+    public void updateFilters(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
         File file = new File(resourceLocation, "/configurations.json");
         FileUtils.writeStringToFile(file, data);
 
@@ -367,30 +385,30 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/filters/{companyid}"}, method = {
             RequestMethod.GET})
-    public String getFilters(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public String getFilters(@PathVariable int companyid) throws IOException, URISyntaxException {
         File file = new File(resourceLocation, "/configurations.json");
         return FileUtils.readFileToString(file);
     }
 
 
     @RequestMapping(value = {"logourl/{companyid}"}, method = {RequestMethod.GET})
-    public Map<String, String> grtLogUrl(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public Map<String, String> grtLogUrl(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, String> url = new HashMap<>();
-        url.put("logo", dbUtils.getCompanyLogo(Integer.parseInt(companyid)));
+        url.put("logo", dbUtils.getCompanyLogo(companyid));
         return url;
     }
 
     @RequestMapping(value = {"categories/{companyid}"}, method = {RequestMethod.GET})
-    public ArrayList<String> getCategoryList(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public ArrayList<String> getCategoryList(@PathVariable int companyid) throws IOException, URISyntaxException {
         ArrayList<String> category = new ArrayList<String>();
-        category = dbUtils.getCategoryList(Integer.parseInt(companyid));
+        category = dbUtils.getCategoryList(companyid);
         return category;
     }
 
     @RequestMapping(value = {"config/autosuggestdetails/{companyid}"}, method = {RequestMethod.GET})
-    public Map<String, Boolean> getAutoSuggstDetails(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public Map<String, Boolean> getAutoSuggstDetails(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, Boolean> autoSug = new HashMap<>();
-        autoSug = dbUtils.getAutoSuggestDetails(Integer.parseInt(companyid));
+        autoSug = dbUtils.getAutoSuggestDetails(companyid);
         return autoSug;
     }
 
@@ -416,10 +434,10 @@ public class ConfigMainController {
 
 
     @RequestMapping(value = {"config/panel/{companyid}"}, method = {RequestMethod.GET})
-    public Map<String, Boolean> configPanelSetting(@PathVariable String companyid) throws IOException, URISyntaxException {
+    public Map<String, Boolean> configPanelSetting(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, Boolean> companySettings = new HashMap<>();
         if(!StringUtils.isEmpty(companyid)){
-            companySettings = dbUtils.getCompanySettings(Integer.parseInt(companyid));
+            companySettings = dbUtils.getCompanySettings(companyid);
         }
 
         return companySettings;
@@ -429,7 +447,7 @@ public class ConfigMainController {
     //Email support
     @RequestMapping(value = {"send/email/{companyid}"}, method = {
             RequestMethod.POST})
-    public void sendMail(@PathVariable String companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
+    public void sendMail(@PathVariable int companyid,@RequestBody Map<String, String> data) throws IOException, URISyntaxException {
         SimpleMailMessage message = new SimpleMailMessage();
         String subject ="",body="";
         for (Map.Entry<String, String> entry : data.entrySet()) {
