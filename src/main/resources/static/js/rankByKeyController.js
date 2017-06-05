@@ -43,6 +43,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             $.each(data, function(index, value) {
                 $scope.filteredResults.push(JSON.parse(value));
             });
+            $scope.filteredResults = _.sortBy( $scope.filteredResults, 'rank');
             $scope.showSpinner = false;
         });
     };
