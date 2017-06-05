@@ -47,6 +47,11 @@
                     </span>
                     <span><a ng-show="showSaveCancel" ng-click="showSaveCancel = false; showEdit= true;" class="hand"><span class="glyphicon glyphicon-remove small-left-margin"></span></a>
                     </span>
+                    <span ng-if="result.rank">
+                         <a data-toggle="Delete" ng-click="deleteRankingByKey(result.pid)" title="Delete">
+                             <span class="glyphicon glyphicon-trash small-left-padding"></span>
+                         </a>
+                    </span>
                 </td>
             </tr>
         </table>

@@ -1,4 +1,4 @@
-app.controller('rankByKeyController', ['$scope', '$rootScope', '$http', 'Notification', '$location','$cookies', function($scope, $rootScope, $http, Notification, $location,$cookies) {
+app.controller('rankByKeyController', ['$scope','$state', '$rootScope', '$http', 'Notification', '$location','$cookies', function($scope,$state, $rootScope, $http, Notification, $location,$cookies) {
     $scope.key = '';
     $scope.synonyms = '';
     $scope.showSpinner = false;
@@ -69,4 +69,20 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             $scope.showSpinner = false;
         });
     };
+
+    $scope.deleteRankingByKey = function(pid) {
+
+            var res = $http.post(uriPrefix + '/delete/rankbykey/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+pid);
+            res.success(function(data, status, headers, config) {
+                $scope.message = data;
+                $scope.openAddSynonym = false;
+                $scope.registeredLinks = data;
+                $state.go($state.current, {}, { reload: true });
+                Notification.success('Ranking deleted successfully');
+            });
+            res.error(function(data, status, headers, config) {
+                console.log("Could not delete synonym");
+                Notification.error('Error in deleting Rank');
+            });
+        }
 }]);

@@ -1,5 +1,38 @@
+<!--
 <tabset>
-	<tab ng-repeat="tab in tabs" select="go(tab.route)" ui-sref-active="tab.active" heading="{{tab.title}}" active="tab.active" disable="tab.disabled">
+	<tab ng-repeat="tab in tabs" select="go(tab.route)"  heading="{{tab.title}}"  disable="tab.disabled">
 		<ui-view></ui-view>
 	</tab>
 </tabset>
+-->
+
+
+<ul class="nav nav-tabs">
+	<li ui-sref-active="active" >
+		<a ui-sref="panel.merchandising.link">
+			Query to URL Redirect
+		</a>
+	</li>
+	<li ui-sref-active="active" >
+		<a ui-sref="panel.merchandising.rank">
+			Rank By Product
+		</a>
+	</li>
+	<li ui-sref-active="active" >
+		<a ui-sref="panel.merchandising.rankByKey">
+			Rank by Keyword
+		</a>
+	</li>
+
+	<li ui-sref-active="active" >
+		<a ui-sref="panel.merchandising.facetconfig">
+			Facet Config
+		</a>
+	</li>
+	<li ui-sref-active="active" >
+		<a ui-sref="panel.merchandising.sortingConfig">
+			Sort Config
+		</a>
+	</li>
+</ul>
+<ui-view></ui-view>
