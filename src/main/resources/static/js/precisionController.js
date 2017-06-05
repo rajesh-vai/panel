@@ -1,4 +1,4 @@
-app.controller('precisionController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location,$cookies) {
+app.controller('precisionController', ['$scope','$state', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope,$state, $rootScope, $http, Notification, $state, $location,$cookies) {
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
@@ -35,7 +35,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
         var res = $http.post(uriPrefix + '/update/precision/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+category +'/'+ precision);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
-            $state.go('panel.settings.precision');
+            $state.go($state.current,{}, { reload: true });
             Notification.success('Precision configuration has been saved successfully');
         });
         res.error(function(data, status, headers, config) {
@@ -45,8 +45,42 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
     }
 
 
-    $scope.updatePrecision = function(){
+    $scope.updatePrecisionDropDown = function(){
         $scope.rankValue = $scope.precisionMap[$scope.selectedCategory];
     }
+
+    $scope.updatePrecision = function(category,precision) {
+            var number = /^[0-9]+$/;
+            if(!precision.match(number)){
+                Notification.error('Please enter a valid number');
+                return;
+            }
+            var res = $http.post(uriPrefix + '/update/precision/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+category +'/'+ precision);
+            res.success(function(data, status, headers, config) {
+                $scope.message = data;
+                $state.go($state.current,{}, { reload: true });
+                Notification.success('Precision configuration has been saved successfully');
+            });
+            res.error(function(data, status, headers, config) {
+                console.log("Could not save sort order");
+                Notification.error('Error in saving precision settings. Please try after some time');
+            });
+        }
+
+        $scope.deletePrecision = function(category) {
+
+            var res = $http.post(uriPrefix + '/delete/precision/'+$cookies.get('fgt45hi7hfturtyrfgh'), category);
+            res.success(function(data, status, headers, config) {
+                $scope.message = data;
+                $scope.openAddSynonym = false;
+                $scope.registeredLinks = data;
+                $state.go($state.current, {}, { reload: true });
+                Notification.success('Precision deleted successfully');
+            });
+            res.error(function(data, status, headers, config) {
+                console.log("Could not delete synonym");
+                Notification.error('Error in deleting Precision');
+            });
+        }
 
 }]);

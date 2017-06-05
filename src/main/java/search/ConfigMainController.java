@@ -367,7 +367,7 @@ public class ConfigMainController {
             RequestMethod.GET})
     public Map<String, String> getPrecision(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, String> precision = new HashMap<>();
-        String qry = "Select categoryname,precision from precision where companyid=" +companyid;
+        String qry = "Select categoryname,precision from precision where companyid=" +companyid + " and categoryname !='_default_'";
         ResultSet rs = dbUtils.selectOutput(qry);
         try {
             while (rs.next()) {
@@ -393,6 +393,14 @@ public class ConfigMainController {
 //        Jsoup.connect(searchUrl + warName + "/" + "rest/config/precision/"+companyid+"").ignoreContentType(true).get();
 
     }
+
+    @RequestMapping(value = {"config/delete/precision/{companyid}"}, method = {
+            RequestMethod.POST})
+    public void deletePrecision(@PathVariable int companyid,@RequestBody String category) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from precision where companyid=" + companyid + " and categoryname = '" + category + "'");
+
+    }
+
     // End of Precision Configuration
 
     @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}"}, method = {
@@ -406,10 +414,17 @@ public class ConfigMainController {
 
     }
 
+    @RequestMapping(value = {"config/delete/rankbykey/{companyid}/{productid}"}, method = {
+            RequestMethod.POST})
+    public void deleteRankByKey(@PathVariable int companyid, @PathVariable String productid) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid=" + companyid + " and productid ='" + productid + "'");
+//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+    }
+
     @RequestMapping(value = {"config/update/rankbyproduct/{companyid}/{rank}/{productid}"}, method = {
             RequestMethod.POST})
     public void updateRankByProduct(@PathVariable int companyid, @PathVariable String rank, @PathVariable String productid, @RequestBody String category) throws IOException, URISyntaxException {
-        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + companyid + " and productid =" + productid + " and categoryname ='" + category + "'");
+        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + companyid + " and productid ='" + productid + "' and categoryname ='" + category + "'");
         String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + companyid + ",'" + productid + "'," + Integer.parseInt(rank) + ",'%s')";
         qry = String.format(qry, category);
         dbUtils.InsertUpdateData(qry);
@@ -417,6 +432,12 @@ public class ConfigMainController {
 
     }
 
+    @RequestMapping(value = {"config/delete/rankbyproduct/{companyid}/{productid}"}, method = {RequestMethod.POST})
+    public void DeleteRankByProduct(@PathVariable int companyid,  @PathVariable String productid, @RequestBody String category) throws IOException, URISyntaxException {
+        dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + companyid + " and productid ='" + productid + "' and categoryname ='" + category + "'");
+//        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+
+    }
     //Rank code starts
 
     //Rank code ends
