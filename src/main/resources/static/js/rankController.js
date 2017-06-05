@@ -54,6 +54,14 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
     };
 
     $scope.updateDetails = function(updatedProductId,rank,category) {
+        if(!rank){
+            Notification.error("Please specify the rank to be updated");
+            return false;
+        }
+        if(isNaN(rank)){
+            Notification.error("Only numeber is allowed for rank field");
+            return false;
+        }
         $scope.showSpinner = true;
         var res = $http.post(uriPrefix + '/update/rankbyproduct/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+rank+'/'+updatedProductId , category);
         res.success(function(data, status, headers, config) {
@@ -61,7 +69,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             $scope.showSpinner = false;
         });
         res.error(function(data, status, headers, config) {
-            Notification.log("Could not update");
+            Notification.error("Could not update");
             $scope.showSpinner = false;
         });
     };

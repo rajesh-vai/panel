@@ -351,8 +351,8 @@ public class ConfigMainController {
     @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}"}, method = {
             RequestMethod.POST})
     public void updateRankByKey(@PathVariable int companyid,@PathVariable String rank,@RequestBody String data) throws IOException, URISyntaxException {
-        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+companyid + " and productid =" +Integer.parseInt(data));
-        String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + companyid + "," + Integer.parseInt(data) + "," + Integer.parseInt(rank) + ")";
+        dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+companyid + " and productid ='" +data +"'");
+        String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + companyid + ",'" + data + "'," + Integer.parseInt(rank) + ")";
         dbUtils.InsertUpdateData(qry);
 
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
