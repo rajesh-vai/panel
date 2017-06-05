@@ -52,7 +52,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             return false;
         }
         if(isNaN(rank)){
-            Notification.error("Only numeber is allowed for rank field");
+            Notification.error("Only number is allowed for rank field");
             return false;
         }
 
@@ -63,7 +63,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             $scope.showSpinner = false;
         });
         res.error(function(data, status, headers, config) {
-            Notification.error("Could not update");
+            Notification.error("Error in updating the rank");
             $scope.showSpinner = false;
         });
     };

@@ -76,6 +76,16 @@ public class ConfigMainController {
         //		Document doc = Jsoup.connect(
         //				elasticDbUrl + "_sql?sql=select * from martjack_fabindia where ns1_id='" + filterText + "' LIMIT 25")
         //				.ignoreContentType(true).get();
+        String qry = "Select productid,rank from rankbyproduct where companyid=" + 3 +" order by rank asc";
+        ResultSet rs = dbUtils.selectOutput(qry);
+        Hashtable<String,Integer> ranking=new Hashtable<String,Integer>();
+        try {
+            while(rs.next()){
+                ranking.put(rs.getString("productid"),rs.getInt("rank"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         List<String> outputLines = new ArrayList<>();
         if(filterText.length() > 0) {
             Document doc = Jsoup.connect(
@@ -89,6 +99,9 @@ public class ConfigMainController {
 
             for (int j = 0; j < resultsArray.size(); j++) {
                 JsonValue record = resultsArray.get(j).asObject().get("_source");
+                if (ranking.containsKey(record.asObject().get("pid").asString())) {
+                    record.asObject().add("rank", ranking.get(record.asObject().get("pid").asString()));
+                }
                 outputLines.add(record.toString());
             }
         }
@@ -104,16 +117,30 @@ public class ConfigMainController {
 
             for (int j = 0; j < resultsArray.size(); j++) {
                 JsonValue record = resultsArray.get(j).asObject().get("_source");
+                if (ranking.containsKey(record.asObject().get("pid").asString())) {
+                    record.asObject().add("rank", ranking.get(record.asObject().get("pid").asString()));
+                }
                 outputLines.add(record.toString());
             }
         }
+
         return outputLines;
     }
 
     @RequestMapping(value = "config/filterByKey/{filterText}", method = RequestMethod.GET)
     public List<String> filterByKey(@PathVariable String filterText) throws IOException, URISyntaxException {
 
-        Document doc = Jsoup.connect(searchUrl + warName + "/" + "search?query=" + filterText).ignoreContentType(true)
+        String qry = "Select productid,rank from rankbykeyword where companyid=" + 3 +" order by rank asc";
+        ResultSet rs = dbUtils.selectOutput(qry);
+        Hashtable<String,Integer> ranking=new Hashtable<String,Integer>();
+        try {
+            while(rs.next()){
+                ranking.put(rs.getString("productid"),rs.getInt("rank"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Document doc = Jsoup.connect(searchUrl + "flyrobe2" + "/" + "search?query=" + filterText).ignoreContentType(true)
                 .get();
         JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
@@ -124,6 +151,9 @@ public class ConfigMainController {
         for (int j = 0; j < resultsArray.size(); j++) {
             if (resultsArray.get(j).asObject().get("_score").asDouble() > 1.2) {
                 JsonValue record = resultsArray.get(j).asObject().get("_source");
+                if (ranking.containsKey(record.asObject().get("pid").asString())) {
+                    record.asObject().add("rank", ranking.get(record.asObject().get("pid").asString()));
+                }
                 outputLines.add(record.toString());
             }
             if (j >= 24)
@@ -314,6 +344,23 @@ public class ConfigMainController {
         List<String> lines = FileUtils.readLines(file);
         return lines;
     }
+    // sorting Configuration
+    @RequestMapping(value = {"config/sorting/{companyid}"}, method = {
+            RequestMethod.GET})
+    public Map<String, String> getSorting(@PathVariable int companyid) throws IOException, URISyntaxException {
+        Map<String, String> sorting = new HashMap<>();
+        String qry = "Select sortorder,rank from sortconfig where companyid=" +companyid;
+        ResultSet rs = dbUtils.selectOutput(qry);
+        try {
+            while (rs.next()) {
+                sorting.put(rs.getString("sortorder"), rs.getString("rank"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return sorting;
+    }
 
     // Precision Configuration
     @RequestMapping(value = {"config/precision/{companyid}"}, method = {
@@ -361,9 +408,9 @@ public class ConfigMainController {
 
     @RequestMapping(value = {"config/update/rankbyproduct/{companyid}/{rank}/{productid}"}, method = {
             RequestMethod.POST})
-    public void updateRankByProduct(@PathVariable int companyid, @PathVariable String rank, @PathVariable int productid, @RequestBody String category) throws IOException, URISyntaxException {
+    public void updateRankByProduct(@PathVariable int companyid, @PathVariable String rank, @PathVariable String productid, @RequestBody String category) throws IOException, URISyntaxException {
         dbUtils.InsertUpdateData("delete from rankbyproduct where companyid=" + companyid + " and productid =" + productid + " and categoryname ='" + category + "'");
-        String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + companyid + "," + productid + "," + Integer.parseInt(rank) + ",'%s')";
+        String qry = "INSERT INTO rankbyproduct (CompanyID, productid,rank,categoryname ) values (" + companyid + ",'" + productid + "'," + Integer.parseInt(rank) + ",'%s')";
         qry = String.format(qry, category);
         dbUtils.InsertUpdateData(qry);
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
