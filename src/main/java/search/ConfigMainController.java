@@ -140,7 +140,7 @@ public class ConfigMainController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        Document doc = Jsoup.connect(searchUrl + "flyrobe2" + "/" + "search?query=" + filterText).ignoreContentType(true)
+        Document doc = Jsoup.connect(searchUrl + warName + "/" + "search?query=" + filterText).ignoreContentType(true)
                 .get();
         JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
@@ -304,37 +304,16 @@ public class ConfigMainController {
 
     // Sorting order
 
-    @RequestMapping(value = {"config/update/sortorder/{companyid}"}, method = {
+    @RequestMapping(value = {"config/update/sortorder/{companyid}/{sortorder}/{rank}"}, method = {
             RequestMethod.POST})
-    public void updateSortOrder(@PathVariable int companyid,@RequestBody String data) throws IOException, URISyntaxException {
-        JSONObject uobject = new JSONObject(data);
-        String uCategory = uobject.get("category").toString();
-        String uSort = uobject.get("sort").toString();
+    public void updateSortOrder(@PathVariable int companyid, @PathVariable String sortorder, @PathVariable int rank) throws IOException, URISyntaxException {
 
-        File file = new File(resourceLocation, "/sortconfig.json");
-        List<String> allLines = FileUtils.readLines(file);
-
-        List<String> outputLines = new ArrayList<>();
-        boolean found = false;
-        for (String line : allLines) {
-            JSONObject object = new JSONObject(line);
-            String category = object.get("category").toString();
-            String sort = object.get("sort").toString();
-
-            if (category.equals(uCategory) && sort.equals(uSort)) {
-                outputLines.add(data);
-                found = true;
-            } else {
-                outputLines.add(line);
-            }
-        }
-        if (!found)
-            outputLines.add(data);
-
-        FileUtils.writeLines(file, outputLines);
+        dbUtils.InsertUpdateData("delete from sortconfig where companyid=" + companyid + " and sortorder = '" + sortorder + "'");
+        String qry = "INSERT INTO sortconfig (CompanyID, sortorder, rank) values (" + companyid + ",'%s'," + rank + ")";
+        qry = String.format(qry, sortorder);
+        dbUtils.InsertUpdateData(qry);
 
         Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
-
     }
 
     @RequestMapping(value = {"config/sortorder/{companyid}"}, method = {

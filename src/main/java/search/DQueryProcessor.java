@@ -3,21 +3,35 @@ package search;
 import com.eclipsesource.json.Json;
 import com.google.gson.*;
 
+import db.DbUtils;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import org.springframework.stereotype.Component;
+
 import ru.lanwen.verbalregex.VerbalExpression;
+
+import javax.inject.Inject;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 public class DQueryProcessor {
+	int companyId=0;
+	ReadProperties properties = new ReadProperties();
+	public String companyName = properties.getPropValues("COMPANYNAME");
+
+	public DbUtils dbUtils;
+
 	///////////
 	String fieldQuery = "{\"filter\":{\"match\":{\"%s\":\"%s\"}},\"weight\":%s}";
 	String rangeQueryFormat = "\"query\":{ \"bool\":{" + "\"should\":[%s]}}";
@@ -27,6 +41,7 @@ public class DQueryProcessor {
 	boolean hasTailString = true;
 	JsonObject configurationJson =new JsonObject();
 	private Hashtable<String, String> synonyms = new Hashtable<>();
+	public Hashtable<String, Integer> precision = new Hashtable<>();
 	Gson gson = new GsonBuilder().create();
 	HashMap<String,Integer> searchScore = new HashMap<String,Integer>();
 
@@ -55,7 +70,7 @@ public class DQueryProcessor {
 
 
 	ArrayList<String> queryParts = new ArrayList<>();
-	private com.eclipsesource.json.JsonObject martJackFabIndia_field_map;
+	private com.eclipsesource.json.JsonObject feed_data_field_map;
 	private com.eclipsesource.json.JsonObject martJackLulu_field_map;
 	private Vector<String> _bow = new Vector<>();
 	private String inputQry;
@@ -65,6 +80,7 @@ public class DQueryProcessor {
 
 	///////////
 	DQueryProcessor() throws Exception {
+		this.dbUtils= new DbUtils();
 		init();
 	}
 
@@ -92,10 +108,12 @@ public class DQueryProcessor {
 
 	private void init() throws Exception {
 		try {
+			getCompanyId();
 			loadFieldData(filesPath + "/FieldObjects.d");
 			loadSynonyms(filesPath);
 			readNoiseList(filesPath);
-			loadFieldMap("martjack_fabindia",filesPath + "/martJackFabIndia_field_map.json");
+			loadPrecision();
+			loadFieldMap("flyrobe",filesPath + "/feed_data_field_map.json");
 			//			loadFieldMap("martjack_lulu",filesPath + "/martJackFabIndia_field_map.json");
 
 			configurations = new String(Files.readAllBytes(Paths.get(filesPath + "/configurations.json")));
@@ -115,13 +133,10 @@ public class DQueryProcessor {
 
 	private void loadFieldMap(String index_name,String filePath) throws Exception{
 		JSONParser parser = new JSONParser();
-		if(index_name.equals("martjack_lulu"))
-			martJackLulu_field_map = Json.parse(new FileReader(filePath)).asObject();
-		else if(index_name.equals("martjack_fabindia"))
-			martJackFabIndia_field_map = Json.parse(new FileReader(filePath)).asObject();
-		org.json.simple.JSONObject set_o = (org.json.simple.JSONObject)parser.parse(martJackFabIndia_field_map.toString());
+		feed_data_field_map = Json.parse(new FileReader(filePath)).asObject();
+		org.json.simple.JSONObject set_o = (org.json.simple.JSONObject)parser.parse(feed_data_field_map.toString());
 		for(Object f : set_o.keySet()) {
-			String val = martJackFabIndia_field_map.get((String)f).toString().toLowerCase();
+			String val = feed_data_field_map.get((String)f).toString().toLowerCase();
 			String w[] = val.split("\\W+");
 			for(String s : w) {
 				if(!_bow.contains(s))
@@ -137,10 +152,7 @@ public class DQueryProcessor {
 		JSONParser parser = new JSONParser();
 		com.eclipsesource.json.JsonObject field_map = new com.eclipsesource.json.JsonObject();
 
-		if(index_name.equals("martjack_lulu"))
-			field_map = martJackLulu_field_map;
-		else if(index_name.equals("martjack_fabindia"))
-			field_map = martJackFabIndia_field_map;
+		field_map = feed_data_field_map;
 
 		org.json.simple.JSONObject set_o = (org.json.simple.JSONObject)parser.parse(field_map.toString());
 		for(Object f : set_o.keySet()) {
@@ -161,22 +173,17 @@ public class DQueryProcessor {
 
 	public void readNoiseList(String folder) throws Exception {
 		Vector<String> list = new Vector<>();
-		HashSet<String> words = new HashSet<>();
-		try (LineNumberReader reader = new LineNumberReader(new FileReader(folder + "/noise.txt"))) {
-			String line = null;
-			while ((line = reader.readLine()) != null)
-				words.add(line);
+		String stopwordQuery = "Select noise from noise where companyid=" + companyId;
+		ResultSet rs = dbUtils.selectOutput(stopwordQuery);
+		while (rs.next()) {
+			String stopword[] = rs.getString("noise").split(",");
+			for (int i = 0; i < stopword.length; i++) {
+				if (stopword[i].length() > 0) {
+					list.add(stopword[i]);
 		}
 
-		JsonParser jsonParser = new JsonParser();
-		JsonArray stopwords_json = jsonParser.parse(new FileReader(folder + "/stopword.json")).getAsJsonArray();
-
-		for(int i=0; i < stopwords_json.size() ; i++) {
-			words.add(stopwords_json.get(i).getAsString());
 		}
 
-		for(String s : words) {
-			list.add(s);
 		}
 		noise=list;
 	}
@@ -212,7 +219,7 @@ public class DQueryProcessor {
 		//		inputQry = removeNumbers(inputQry);
 		inputQry = removeNoise(inputQry);
 		inputQry = removePunctuations(inputQry);
-		inputQry = replaceSynonyms(" " + inputQry + " ");
+		//inputQry = replaceSynonyms(" " + inputQry + " ");
 
 		///////////
 		//////////
@@ -227,24 +234,19 @@ public class DQueryProcessor {
 		HashMap<String,HashSet<String>> fields = probableFields(index_name,inputQry);
 
 		/////
-		HashMap<String,String> w_map_fabindia = new HashMap<>();
-		w_map_fabindia.put("ns1_title","\"weight\":3");
-		w_map_fabindia.put("ns1_product_type_extr","\"weight\":15");
-		w_map_fabindia.put("ns1_product_type","\"weight\":15");
-		w_map_fabindia.put("ns1_google_product_category","\"weight\":1");
-		w_map_fabindia.put("ns1_material","\"weight\":1");
-		w_map_fabindia.put("Fabric(Predefined)","\"weight\":1");
-		w_map_fabindia.put("Style(Predefined)","\"weight\":1");
-		w_map_fabindia.put("ns1_color","\"weight\":1");
-		w_map_fabindia.put("Neck(Predefined)","\"weight\":1");
-		w_map_fabindia.put("Craft(Predefined)","\"weight\":1");
-		w_map_fabindia.put("Fit(Predefined)","\"weight\":1");
-		w_map_fabindia.put("ns1_pattern","\"weight\":1");
-		w_map_fabindia.put("Sleeves(Predefined)","\"weight\":2");
-		w_map_fabindia.put("Pattern(Predefined)","\"weight\":1");
-		w_map_fabindia.put("Material(Predefined)","\"weight\":1");
-		w_map_fabindia.put("Color(Predefined)","\"weight\":1");
-		w_map_fabindia.put("s_n_s_tags","\"weight\":1");
+		HashMap<String,String> w_map_flyrobe = new HashMap<>();
+		w_map_flyrobe.put("title","\"weight\":6");
+		w_map_flyrobe.put("category","\"weight\":15");
+		w_map_flyrobe.put("vendor","\"weight\":6");
+		w_map_flyrobe.put("brand","\"weight\":8");
+		w_map_flyrobe.put("color","\"weight\":8");
+		w_map_flyrobe.put("cod","\"weight\":2");
+		w_map_flyrobe.put("in_stock","\"weight\":2");
+		w_map_flyrobe.put("description","\"weight\":8");
+		w_map_flyrobe.put("customizable","\"weight\":2");
+		w_map_flyrobe.put("s_n_s_tags","\"weight\":2");
+		w_map_flyrobe.put("currency","\"weight\":2");
+		w_map_flyrobe.put("model","\"weight\":2");
 
 		HashMap<String,String> w_map_lulu = new HashMap<>();
 		/////
@@ -255,18 +257,19 @@ public class DQueryProcessor {
 			for(String word : fields.get(s))
 				words += word +" ";
 
-			if(index_name.equals("martjack_fabindia")) {
-				String weight = w_map_fabindia.get(s);
+			if(index_name.equals("flyrobe")) {
+				String weight = w_map_flyrobe.get(s);
 				//				System.out.println(s);
-				if(s.equals("ns1_title")) {
+				if(s.equals("title")) {
 					_and_Q += _andPART.replace("_field_", "s_n_s_tags").replaceAll("_query_", words).replace("\"weight\":1", weight)+",";
 					_or_Q += _orPART.replace("_field_", "s_n_s_tags").replaceAll("_query_", words).replace("\"weight\":1", weight)+",";
 				}
 
+				System.out.println(s+":"+words+":"+weight);
 				_and_Q += _andPART.replace("_field_", s).replaceAll("_query_", words).replace("\"weight\":1", weight)+",";
 				_or_Q += _orPART.replace("_field_", s).replaceAll("_query_", words).replace("\"weight\":1", weight)+",";
 			}
-			else if(index_name.equals("martjack_fabindia")) {
+			else if(index_name.equals("flyrobe")) {
 
 			}
 
@@ -506,42 +509,47 @@ public class DQueryProcessor {
 		return res.toString();
 	}
 
-	public void loadSynonyms(String folderName) throws Exception {
-		try (LineNumberReader r = new LineNumberReader(new FileReader(folderName + "/synonyms.txt"))) {
-			String line = null;
-			while ((line = r.readLine()) != null) {
-				String s[] = line.split("=");
-				if (s.length == 2) {
+	public void getCompanyId() {
+		String qry = "Select companyid,securitykey FROM " + " company " + " where companyname = '" + companyName + "'";
+		ResultSet rs = dbUtils.selectOutput(qry);
 					try {
-						synonyms.put(s[0], s[1]);
-					} catch (Exception e) {
-						for (String ss : s)
-							System.out.println(ss);
-						throw (e);
+			while (rs.next()) {
+				companyId = rs.getInt("companyid");
 					}
+		} catch (SQLException s) {
+			s.printStackTrace();
 				}
 			}
+
+	public void loadPrecision() throws Exception {
+		String precisionQuery = "Select categoryname,precision from precision where companyid=" + companyId;
+		ResultSet rs = dbUtils.selectOutput(precisionQuery);
+		while (rs.next()) {
+			precision.put(rs.getString("categoryname"), rs.getInt("precision"));
 		}
-		try {
-			JsonParser jsonParser = new JsonParser();
-			JsonObject synonyms_json = jsonParser.parse(new FileReader(folderName + "/synonym.json")).getAsJsonObject();
-			for(Entry<String, JsonElement> e : synonyms_json.entrySet()) {
-				JsonArray ar = e.getValue().getAsJsonArray();
-				for(int i=0; i < ar.size() ; i++) {
-					synonyms.put(ar.get(i).getAsString(), e.getKey());
+	}
+	public void loadSynonyms(String folderName) throws Exception {
+		String synonymQuery = "Select keyword,synonyms from synonyms where companyid="+companyId;
+		ResultSet rs = dbUtils.selectOutput(synonymQuery);
+		while (rs.next()) {
+			String syn[] = rs.getString("synonyms").split(",");
+			for (int i=0;i<syn.length;i++){
+				if(syn[i].length()>0){
+					synonyms.put(syn[i], rs.getString("keyword"));
+		}
 				}
 			}
 
-			synonyms_json = jsonParser.parse(new FileReader(folderName + "/spelling.json")).getAsJsonObject();
-			for(Entry<String, JsonElement> e : synonyms_json.entrySet()) {
-				JsonArray ar = e.getValue().getAsJsonArray();
-				for(int i=0; i < ar.size() ; i++) {
-					synonyms.put(ar.get(i).getAsString(), e.getKey());
+		String spellingQuery = "Select keyword,spellings from spellcheck where companyid="+companyId;
+		rs = dbUtils.selectOutput(spellingQuery);
+		while (rs.next()) {
+			String spel[] = rs.getString("spellings").split(",");
+			for (int i=0;i<spel.length;i++){
+				if(spel[i].length()>0){
+					synonyms.put(spel[i], rs.getString("keyword"));
 				}
 			}
 
-		}catch(Exception e) {
-			System.err.println("synonym.json OR spelling.json ... was not loaded properly.");
 		}
 	}
 
@@ -573,7 +581,7 @@ public class DQueryProcessor {
 			if (query.contains(" " + s + " ")) {
 				String v = synonyms.get(s);
 				if (!query.contains(" " + v + " "))
-					query = query.replace(s, " " + v + " ");
+					query = query.replace(" " + s + " ", " " + v + " ");
 			}
 
 		}
