@@ -154,6 +154,12 @@
                 return function (scope, element, attrs) {
                     element.height($('body').height() - 60);
                 }
+            })
+            .directive('setHeightWidth', function() {
+                return function (scope, element, attrs) {
+                    element.height($('body').height() - 100);
+                    element.width($('body').width() - 250);
+                }
             });
 
 

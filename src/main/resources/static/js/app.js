@@ -1,8 +1,8 @@
 //This should be same as the WAR to be generated name
-_appName_ = "/newui";
+_appName_ = "/flyrobe2";
 //
 
-var app = angular.module('app', ['ui.bootstrap','ui.toggle','ui.router','appDirectives','AngularChart','ui-notification','dndLists','ngCookies']);
+var app = angular.module('app', ['ui.bootstrap','ui.toggle','ui.router','ui.bootstrap.typeahead','appDirectives','AngularChart','ui-notification','dndLists','ngCookies','ngSanitize']);
 
 
 app.config(function($stateProvider, $urlRouterProvider) {
@@ -17,6 +17,13 @@ $urlRouterProvider.otherwise('/login');
             templateUrl: 'views/settings.html',
             controller: 'settingsController'
         })
+
+        .state('query', {
+            url: '/query',
+            templateUrl: 'views/query.html',
+            controller: 'queryController'
+        })
+
         .state('panel.merchandising', {
             url: '/merchandising',
             templateUrl: 'views/merchandising.html',
@@ -57,6 +64,11 @@ $urlRouterProvider.otherwise('/login');
             url: '/contactus',
             templateUrl: 'views/contactus.html',
             controller: 'contactusController'
+        })
+        .state('panel.autocomplete', {
+            url: '/autocomplete',
+            templateUrl: 'views/autocomplete.html',
+            controller: 'autocompleteController'
         })
         .state('panel.analytics', {
             url: '/analytics',
