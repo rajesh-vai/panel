@@ -1,4 +1,4 @@
-app.controller('sortingConfigController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location, $cookies) {
+app.controller('sortingConfigController', ['$scope','$state', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope,$state, $rootScope, $http, Notification, $state, $location, $cookies) {
     $('.sidenav').removeClass('hidden');
     $('.main-page').removeClass('col-sm-12').addClass('col-sm-9');
     $('.main-page').addClass('white-background');
@@ -10,28 +10,31 @@ app.controller('sortingConfigController', ['$scope', '$rootScope', '$http', 'Not
     $scope.names = ["Relevance", "Price low to high", "Price high to low", "New arrival", "Best selling", "Popular", "Discount Ascending", "Discount Descending"];
 
     var uriPrefix = _appName_+"/rest/config";
-    $scope.getSortRank = function() {
-        $http.get(uriPrefix + '/sortorder').success(function(data) {
-            if (data.length && $scope.selectedSortItem && $scope.selectedCategory) {
-                $scope.rankValue = "";
-                var keepGoing = true;
-                angular.forEach(data, function(dataItem) {
-                    item = JSON.parse(dataItem);
-                    if (keepGoing && item.category && item.sort && item.category == $scope.selectedCategory && item.sort == $scope.selectedSortItem && item.rank) {
-                        $scope.rankValue = item.rank;
-                        keepGoing = false;
-                    }
-                });
-            }
-        });
+
+    $http.get(uriPrefix+"/sorting/"+$cookies.get('fgt45hi7hfturtyrfgh')).success(function(data) {
+        $scope.sortRanks = data;
+    });
+
+    $scope.getSortRank = function(){
+        $scope.rankValue = $scope.sortRanks[$scope.selectedSortItem];
     }
 
     $scope.saveSortRankConfigs = function() {
         var sort = $scope.selectedSortItem;
         var rank = $scope.rankValue;
-        var category = $scope.selectedCategory;
-        var object = { category, sort, rank };
-        var res = $http.post(uriPrefix + '/update/sortorder', JSON.stringify(object));
+        if(!sort){
+            Notification.error('Please select a sort order');
+            return false;
+        }
+        if(!rank){
+            Notification.error('Please enter rank and save the changes');
+            return false;
+        }
+        if(isNaN(rank)){
+            Notification.error('Please enter a valid number');
+            return false;
+        }
+        var res = $http.post(uriPrefix + '/update/sortorder/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+sort +'/'+ rank);
         res.success(function(data, status, headers, config) {
             $scope.message = data;
             $state.go($state.current, {}, { reload: true });

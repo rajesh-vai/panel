@@ -25,11 +25,19 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
     $scope.savePrecisionConfigs = function() {
         var precision = $scope.rankValue;
         var number = /^[0-9]+$/;
-        if(!precision.match(number)){
+        if(!precision){
+            Notification.error('Please enter precision and save the changes');
+            return false;
+        }
+        if(isNaN(precision)){
             Notification.error('Please enter a valid number');
-            return;
+            return false;
         }
         var category = $scope.selectedCategory;
+        if(!category){
+            Notification.error('Please select a category and save the changes');
+            return false;
+        }
         var updatedValue = {};
         updatedValue[category] = precision ;
         var res = $http.post(uriPrefix + '/update/precision/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+category +'/'+ precision);

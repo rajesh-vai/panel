@@ -1,0 +1,19 @@
+<div class="vertical-center no-color">
+
+	<div class="container medium-top-padding">
+
+		<div class="row">
+			<div class="col-md-10 medium-left-padding">
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Enter your query" ng-model="searchQuery" aria-describedby="basic-addon2">
+					<span class="input-group-addon hand" id="basic-addon2" ng-click="executeSearch(searchQuery)">Search</span>
+				</div>
+			</div>
+
+			<div class="col-md-10 auto-overflow-style"  set-height-width>
+				<div ng-bind-html="searchResults"></div>
+			</div>
+		</div>
+	</div>
+
+</div>

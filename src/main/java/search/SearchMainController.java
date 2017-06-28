@@ -19,6 +19,7 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -59,6 +60,7 @@ public class SearchMainController {
 	public void watcherUpdate()  throws Exception{
 		DQueryProcessor.instance(resourceLocation).loadSynonyms(resourceLocation);
 		DQueryProcessor.instance(resourceLocation).readNoiseList(resourceLocation);
+		DQueryProcessor.instance(resourceLocation).loadPrecision();
 	}
 	
 	@RequestMapping(value = "search", method = RequestMethod.GET)
@@ -98,10 +100,20 @@ public class SearchMainController {
 		JsonObject results = Json.parse(restTemplate.postForObject(url, parsedQuery, String.class).toString()).asObject();
 		
 		JsonArray baseRes = results.get("hits").asObject().get("hits").asArray();
+		Hashtable<String, Integer> precision = qp.precision;
+		double maxScore = results.get("hits").asObject().getDouble("max_score", 1.0);
+		double defaultPrecision = maxScore*(1-(precision.get("_default_") * 0.01));
 		JsonArray coreRes = new JsonArray();
+		String cateory="";
+		double usePrecision=0.00;
 		for(JsonValue v : baseRes) {
+			usePrecision=defaultPrecision;
 			double score = v.asObject().get("_score").asDouble();
-			if(score > 2) {
+			cateory = results.get("hits").asObject().get("hits").asArray().get(0).asObject().get("_source").asObject().get("category").asString();
+			if(precision.containsKey(cateory)){
+				usePrecision = (1-(precision.get(cateory) * 0.01)) * maxScore;
+			}
+			if(score >= usePrecision) {
 				JsonObject eO = v.asObject().get("_source").asObject();
 				eO.remove("s_n_s_tags");
 				coreRes.add(eO);
@@ -109,18 +121,17 @@ public class SearchMainController {
 		}
 		
 		String[] headers = {
-				"ns1_title",
-				"ns1_price",
-				"ns1_product_type",
-				"ns1_material",
-				"Fabric(Predefined)",
-				"Style(Predefined)",
-				"ns1_color",
-				"Neck(Predefined)",
-				"Craft(Predefined)",
-				"Fit(Predefined)",
-				"ns1_pattern",
-				"Sleeves(Predefined)"};
+				"title",
+				"price",
+				"category",
+				"brand",
+				"vendor",
+				"color",
+				"customizable",
+				"description",
+				"cod",
+				"in_stock"};
+
 		
 		StringBuilder sb_table = new StringBuilder("<html><head><style>table {\n" + 
 				"color: #333; " + 

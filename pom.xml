@@ -170,7 +170,7 @@
                 <version>1.3.3.RELEASE</version>
                 <configuration>
                     <mainClass>com.javacodegeeks.examples.WebAppInitializer</mainClass>
-                    <finalName>newui</finalName>
+                    <finalName>flyrobe2</finalName>
                 </configuration>
                 <executions>
                     <execution>
