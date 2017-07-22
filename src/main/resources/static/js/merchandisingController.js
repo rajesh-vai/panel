@@ -10,7 +10,7 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
 
   $scope.tabs = [
     { title:'Query to URL Redirect', route: 'panel.merchandising.link' },
-    { title:'Rank By Product', route: 'panel.merchandising.rank' },
+    { title:'Rank By Category', route: 'panel.merchandising.rank' },
     { title:'Rank by Keyword', route: 'panel.merchandising.rankByKey' },
     { title:'Facet Config', route: 'panel.merchandising.facetconfig' },
     { title:'Sort Config', route: 'panel.merchandising.sortingConfig' }
