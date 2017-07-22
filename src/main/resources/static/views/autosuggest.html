@@ -1,5 +1,6 @@
 <div class="auto-suggest small-left-padding">
-    <button type="button" class="btn btn-primary pull-right apply-btn" ng-click="saveAutoSuggestConfigs()">Apply</button>
+    <button type="button" class="btn btn-primary pull-right apply-btn" ng-click="saveAutoSuggestConfigs()">Apply
+    </button>
     <h4>Auto Suggest Configuration
         <!--<a tooltip="add help text" tooltip-placement="right" tooltip-append-to-body="true"
            class="glyphicon glyphicon-info-sign info-icon"></a>-->
@@ -12,7 +13,8 @@
             <div class="col-xs-12">
                 <div class="col-xs-10">
                     <h4>Auto Suggest
-                        <a tooltip="Displays keyword suggestions, top searches and popular products" tooltip-placement="right" tooltip-append-to-body="true"
+                        <a tooltip="Displays keyword suggestions, top searches and popular products"
+                           tooltip-placement="right" tooltip-append-to-body="true"
                            class="glyphicon glyphicon-info-sign info-icon"></a>
                     </h4>
                     <p>
@@ -29,14 +31,15 @@
             <div class="col-xs-12">
                 <div class="col-xs-10">
                     <h4>Top Queries
-                        <a tooltip="Enable to display top searched queries" tooltip-placement="right" tooltip-append-to-body="true"
+                        <a tooltip="Enable to display top searched queries" tooltip-placement="right"
+                           tooltip-append-to-body="true"
                            class="glyphicon glyphicon-info-sign info-icon"></a>
                     </h4>
                     <p>
                         Enable to display top performing search queries
                     </p>
                 </div>
-                <div class="col-xs-2" >
+                <div class="col-xs-2">
                     <toggle ng-model="topqueries" ng-click="resetAutoSuggest(topqueries)" size="btn-xs"></toggle>
                 </div>
             </div>
@@ -46,7 +49,8 @@
             <div class="col-xs-12">
                 <div class="col-xs-10">
                     <h4>Keyword Suggestions
-                        <a tooltip="Enable to display intelligent keyword suggestions and phrase suggestions" tooltip-placement="right" tooltip-append-to-body="true"
+                        <a tooltip="Enable to display intelligent keyword suggestions and phrase suggestions"
+                           tooltip-placement="right" tooltip-append-to-body="true"
                            class="glyphicon glyphicon-info-sign info-icon"></a>
                     </h4>
                     <p>
@@ -54,7 +58,8 @@
                     </p>
                 </div>
                 <div class="col-xs-2">
-                    <toggle ng-model="keywordsuggestions" ng-click="resetAutoSuggest(keywordsuggestions)" size="btn-xs"></toggle>
+                    <toggle ng-model="keywordsuggestions" ng-click="resetAutoSuggest(keywordsuggestions)"
+                            size="btn-xs"></toggle>
                 </div>
 
             </div>
@@ -64,7 +69,8 @@
             <div class="col-xs-12">
                 <div class="col-xs-10">
                     <h4>Search Scope
-                        <a tooltip="Enable to display scope(category) suggestions within the auto suggest widget" tooltip-placement="right" tooltip-append-to-body="true"
+                        <a tooltip="Enable to display scope(category) suggestions within the auto suggest widget"
+                           tooltip-placement="right" tooltip-append-to-body="true"
                            class="glyphicon glyphicon-info-sign info-icon"></a>
                     </h4>
                     <p>
@@ -72,7 +78,7 @@
                     </p>
                 </div>
                 <div class="col-xs-2">
-                    <toggle ng-model="searchscope"  ng-click="resetAutoSuggest(searchscope)" size="btn-xs"></toggle>
+                    <toggle ng-model="searchscope" ng-click="resetAutoSuggest(searchscope)" size="btn-xs"></toggle>
                 </div>
             </div>
         </div>
@@ -83,32 +89,28 @@
             <div>
                 <div>
                     <div class="col-xs-12">
-                    <h4 class="col-xs-10">Select auto suggest template
-                        <a tooltip="Select the type of Auto Suggest UI template. The Auto Suggest JSON will be formatted according to the template selected" tooltip-placement="right" tooltip-append-to-body="true"
-                           class="glyphicon glyphicon-info-sign info-icon"></a>
-                    </h4>
+                        <h4 class="col-xs-10">Select auto suggest template
+                            <a tooltip="Select the type of Auto Suggest UI template. The Auto Suggest JSON will be formatted according to the template selected"
+                               tooltip-placement="right" tooltip-append-to-body="true"
+                               class="glyphicon glyphicon-info-sign info-icon"></a>
+                        </h4>
                     </div>
                     <div>
-                    <input type="radio" name="emotion" id="template1" class="input-hidden" ng-model="selectedtemplate.name" value="template1"/>
-                    <label for="template1">
-                        <img src="images/template1.jpg"/>
-                    </label>
+                        <input type="radio" name="emotion" id="template1" class="input-hidden"
+                               ng-model="selectedtemplate.name" value="template1"/>
+                        <label for="template1">
+                            <img src="images/template1.jpg"/>
+                        </label>
 
-                    <input type="radio" name="emotion" id="template2" class="input-hidden" ng-model="selectedtemplate.name" value="template2"/>
-                    <label for="template2">
-                        <img class="medium-left-margin" src="images/template2.jpg"/>
-                    </label>
-                    <br/>
-                    <br/>
-                    <input type="radio" name="emotion" id="template3" class="input-hidden" ng-model="selectedtemplate.name" value="template3"/>
-                    <label for="template3">
-                        <img src="images/template3.jpg"/>
-                    </label>
+                        <input type="radio" name="emotion" id="template2" class="input-hidden"
+                               ng-model="selectedtemplate.name" value="template2"/>
+                        <label for="template2">
+                            <img class="medium-left-margin" src="images/template2.jpg"/>
+                        </label>
+                        <br/>
+                        <br/>
 
-                    <input type="radio" name="emotion" id="template4" class="input-hidden" ng-model="selectedtemplate.name" value="template4"/>
-                    <label for="template4">
-                        <img class="medium-left-margin" src="images/template4.jpg"/>
-                    </label>
+
                     </div>
                 </div>
 
