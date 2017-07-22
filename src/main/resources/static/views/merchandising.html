@@ -8,28 +8,28 @@
 
 
 <ul class="nav nav-tabs">
-	<li ui-sref-active="active" >
+	<li ui-sref-active="active" ng-if="panelConfig.querytoredirect">
 		<a ui-sref="panel.merchandising.link">
 			Query to URL Redirect
 		</a>
 	</li>
-	<li ui-sref-active="active" >
+	<li ui-sref-active="active" ng-if="panelConfig.rankbyproduct">
 		<a ui-sref="panel.merchandising.rank">
 			Rank By Product
 		</a>
 	</li>
-	<li ui-sref-active="active" >
+	<li ui-sref-active="active" ng-if="panelConfig.rankbykeyword">
 		<a ui-sref="panel.merchandising.rankByKey">
 			Rank by Keyword
 		</a>
 	</li>
 
-	<li ui-sref-active="active" >
+	<li ui-sref-active="active" ng-if="panelConfig.facetconfig">
 		<a ui-sref="panel.merchandising.facetconfig">
 			Facet Config
 		</a>
 	</li>
-	<li ui-sref-active="active" >
+	<li ui-sref-active="active" ng-if="panelConfig.sortconfig">
 		<a ui-sref="panel.merchandising.sortingConfig">
 			Sort Config
 		</a>

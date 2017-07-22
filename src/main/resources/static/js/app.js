@@ -65,15 +65,25 @@ $urlRouterProvider.otherwise('/login');
             templateUrl: 'views/contactus.html',
             controller: 'contactusController'
         })
-        .state('panel.autocomplete', {
+        .state('    autocomplete', {
             url: '/autocomplete',
             templateUrl: 'views/autocomplete.html',
             controller: 'autocompleteController'
+        })
+        .state('    autocomplete2', {
+            url: '/autocomplete2',
+            templateUrl: 'views/autocomplete2.html',
+            controller: 'autocomplete2Controller'
         })
         .state('panel.analytics', {
             url: '/analytics',
             templateUrl: 'views/analytics.html',
             controller: 'analyticsController'
+        })
+        .state('panel.home', {
+            url: '/home',
+            templateUrl: 'views/home.html',
+            controller: 'homeController'
         })
         .state('panel.viewnotifications', {
             url: '/notifications',
@@ -109,11 +119,6 @@ $urlRouterProvider.otherwise('/login');
             url: '/fliter',
             templateUrl: 'views/fliterConfig.html',
             controller: 'filterConfigController'
-        })
-        .state('panel.home', {
-            url: '/home',
-            templateUrl: 'views/home.html',
-            controller: 'homeController'
         })
         .state('login', {
             url: '/login',

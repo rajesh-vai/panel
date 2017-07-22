@@ -120,7 +120,13 @@
         <div class="sidebar col-xs-2 no-padding" data-background-color="white" data-active-color="danger">
             <div class="sidebar-wrapper">
                 <ul class="nav">
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" >
+                        <a ui-sref="panel.home">
+                            <i class="fa fa-fw fa-info"></i>
+                            <p>About</p>
+                        </a>
+                    </li>
+                    <li ui-sref-active="active" ng-if="panelConfig['dashboard']">
                         <a ui-sref="panel.dashboard">
                             <i class="fa fa-fw fa-dashboard"></i>
                             <p>Dashboard</p>

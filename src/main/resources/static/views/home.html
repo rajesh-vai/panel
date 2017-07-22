@@ -1,4 +1,34 @@
 <div class="small-left-padding">
+    <h4 class="align-center header-content">Welcome to SeekNShop.IO Natural Language Search Merchandizing Configuration Panel </h4>
+    <div>
+        <div class="container-autoscroll">
+            <h6 class="sub-header">The following configuration functionality can be configured for FlyRobe using this panel: </h6>
+            <br>
+            <table>
+                <thead class="border-sep-thick smaller-bottom-padding">
+                <tr>
+                    <th>Screen Name</th>
+                    <th>Functionality</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody class="display-content">
+                <tr ng-repeat="item in displayItems" class="border-sep">
+                    <td class="small-padding"> {{item.name }}</td>
+                    <td colspan="2">
+                        <table>
+                            <tr ng-repeat="detail in item.details">
+                                <td class="small-padding screen-name">{{detail.screenName}}</td>
+                                <td class="small-padding">{{detail.description}}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
 
+        </div>
+
+    </div>
 </div>
 

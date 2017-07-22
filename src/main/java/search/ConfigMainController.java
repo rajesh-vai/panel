@@ -6,12 +6,12 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import db.DbUtils;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +20,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,6 @@ import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-import com.google.gson.Gson;
 
 @RestController
 @RequestMapping(value = "/rest")
@@ -483,10 +481,16 @@ public class ConfigMainController {
     @RequestMapping(value = {"config/panel/{companyid}"}, method = {RequestMethod.GET})
     public Map<String, Boolean> configPanelSetting(@PathVariable int companyid) throws IOException, URISyntaxException {
         Map<String, Boolean> companySettings = new HashMap<>();
-        if(!StringUtils.isEmpty(companyid)){
-            companySettings = dbUtils.getCompanySettings(companyid);
+//        if(!StringUtils.isEmpty(companyid)){
+//            companySettings = dbUtils.getCompanySettings(companyid);
+//        }
+//
+//        return companySettings;
+        File file = new File(resourceLocation, "/companysettings.json");
+        com.eclipsesource.json.JsonArray settings = Json.parse(FileUtils.readFileToString(file)).asArray();
+        for (int i = 0; i < settings.size(); i++) {
+            companySettings.put(settings.get(i).asObject().get("screen").asString(), settings.get(i).asObject().get("show").asString().equalsIgnoreCase("true") ? true : false);
         }
-
         return companySettings;
     }
 
@@ -518,4 +522,50 @@ public class ConfigMainController {
         }
 
     }
+
+    @RequestMapping(value = {"config/autocomplete"}, method = {
+            RequestMethod.GET})
+    public String getAutocomplete() throws IOException, URISyntaxException {
+        File file = new File(resourceLocation, "/auto.json");
+        return FileUtils.readFileToString(file);
+    }
+
+
+    @RequestMapping(value = {"config/home/{companyid}"}, method = {RequestMethod.GET})
+    public List<DisplayItem>  homeScreen(@PathVariable int companyid) throws IOException, URISyntaxException {
+        Map<String, Map<String,String>> companySettings = new HashMap<>();
+        List<DisplayItem> displayItems = new ArrayList<>();
+        ArrayList<String> toShowOptions = new ArrayList<>();
+        Map<String,String> screenNameActual =  new HashMap<>();
+        screenNameActual.put("dashboard","Dashboard");
+        screenNameActual.put("contactus","Contact Us");
+        screenNameActual.put("relevanceSettings","Relevance Settings");
+        screenNameActual.put("analytics","Analytics");
+        screenNameActual.put("searchMerchandising","Search Merchandising");
+        screenNameActual.put("autosuggest","Auto Suggest");
+        File file = new File(resourceLocation, "/companysettings.json");
+        com.eclipsesource.json.JsonArray settings = Json.parse(FileUtils.readFileToString(file)).asArray();
+        for (int i = 0; i < settings.size(); i++) {
+            if(settings.get(i).asObject().get("show").asString().equalsIgnoreCase("true")){
+                toShowOptions.add(settings.get(i).asObject().get("screen").asString());
+            }
+        }
+
+        File file1 = new File(resourceLocation, "/screens.json");
+        JsonObject jsonObject = Json.parse(FileUtils.readFileToString(file1)).asObject();
+        JSONObject screenSettings = new JSONObject(jsonObject.toString());
+        for(String option : toShowOptions){
+            if (screenSettings.has(option)) {
+                JSONArray mainScreen= screenSettings.getJSONArray(option);
+
+                for(int i=0;i<mainScreen.length();i++){
+                    String screenName = mainScreen.getJSONObject(i).getString("screenname");
+                    String description= mainScreen.getJSONObject(i).getString("description");
+                    displayItems.add(new DisplayItem(screenNameActual.get(option),screenName,description));
+                }
+            }
+        }
+        return displayItems;
+    }
+
 }

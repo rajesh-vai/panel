@@ -1,11 +1,29 @@
-<script type="text/ng-template" id="typeahead-item.html">
-	<div class="typeahead-group-header" ng-if="match.model.firstInGroup">Desc {{match.model.group}}</div>
+<!--<script type="text/ng-template" id="typeahead-item.html">
+	<div class="typeahead-group-header" ng-if="match.model.firstInGroup"> {{match.model.group}}</div>
 	<a>
-		<span ng-bind-html="match.label | typeaheadHighlight:query"></span>
+		<span ng-bind-html="match.label | typeaheadHighlight:query">hello</span>
 	</a>
+</script>-->
+<script type="text/ng-template" id="customTemplate.html">
+	<a> {{ match.model.name}} - in {{match.model.dept}}</a>
 </script>
-<input type="text" class="form-control" placeholder="Users loaded from local database"
-	   ng-model="selectedUser"
-	   typeahead="user as user.name for user in getUsers($viewValue)"
-	   typeahead-template-url="typeahead-item.html" />
-<pre>{{selectedUser | json}}</pre>
+<div class="vertical-center no-color">
+
+	<div class="container medium-top-padding">
+<div class='container-fluid' >
+
+	<input type="text" ng-model="selected"
+		   typeahead="user.name as user for user in users | filter:$viewValue | limitTo:12" class="form-control"
+		   typeahead-template-url="customTemplate.html"
+           typeahead-min-length='4'
+           typeahead-no-results="noResults"
+    >
+
+    <div ng-if="noResults">
+        No Results Found!
+    </div>
+
+
+</div>
+</div>
+</div>

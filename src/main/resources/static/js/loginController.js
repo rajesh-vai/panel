@@ -22,7 +22,7 @@ app.controller('loginController', [ '$scope', '$rootScope' , '$http', '$location
                 $http.get(_appName_+"/rest/logourl/"+$rootScope.companyid).success(function(data) { $rootScope.logourl = data['logo'];});
                 $http.get(_appName_ + '/rest/config/panel/'+$rootScope.companyid).success(function(data) { $rootScope.panelConfig = data;});
 
-                $location.path( "/panel/dashboard" );
+                $location.path( "/panel/home" );
             }
             else{
             alert("invalid company name");

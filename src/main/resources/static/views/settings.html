@@ -6,23 +6,23 @@
 </tabset>-->
 
 <ul class="nav nav-tabs">
-	<li ui-sref-active="active">
+	<li ui-sref-active="active" ng-if="panelConfig.synonyms">
 		<a ui-sref="panel.settings.synonym">
 			Synonyms
 		</a>
 	</li>
-	<li ui-sref-active="active">
+	<li ui-sref-active="active" ng-if="panelConfig.spellcheck">
 		<a ui-sref="panel.settings.spelling">
 			Spell Check
 		</a>
 	</li>
-	<li ui-sref-active="active">
+	<li ui-sref-active="active" ng-if="panelConfig.noiseword">
 		<a ui-sref="panel.settings.stopword">
 			Noise Words
 		</a>
 	</li>
 
-	<li ui-sref-active="active">
+	<li ui-sref-active="active" ng-if="panelConfig.precision">
 		<a ui-sref="panel.settings.precision">
 			Precision Configuration
 		</a>

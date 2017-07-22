@@ -49,6 +49,10 @@ body {
     border-radius: 3px;
 }
 
+.small-padding{
+    padding : 4px !important;
+}
+
 .panel-group {
     padding-left: 10px;
     padding-right: 10px;
@@ -60,6 +64,9 @@ body {
 
 .small-left-padding {
     padding-left: 5px;
+}
+.small-left-padding-new {
+    padding-left: 25px;
 }
 
 .medium-left-padding {
@@ -219,6 +226,10 @@ body {
 
 .small-bottom-padding {
     padding-bottom: 10px;
+}
+
+.smaller-bottom-padding {
+    padding-bottom: 5px;
 }
 
 .large-bottom-padding {
@@ -451,7 +462,6 @@ input:checked + .slider:before {
 
 .main-panel {
   background:  #f5f5f0;
-  overflow: auto;
   }
 
 .auto-suggest {
@@ -1172,3 +1182,33 @@ html {
       border-bottom: 1px solid black;
       font-weight: bold;
     }
+
+
+.container-autoscroll{
+    height: calc(100vh - 100px);
+    overflow-y: scroll;
+}
+
+.border-sep{
+    border-bottom : 1px solid #bbb7b7;
+}
+
+.border-sep-thick{
+    border-bottom : 2px solid #bbb7b7;
+}
+
+.screen-name {
+    width: 250px;
+}
+
+.header-content{
+    font-size : 16px !important;
+}
+
+.sub-header{
+    font-size : 14px !important;
+}
+
+.display-content{
+    font-size : 12px !important;
+}
