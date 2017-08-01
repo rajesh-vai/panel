@@ -78,7 +78,32 @@ public class SearchMainController {
 //		parsedQuery = parsedQuery.replaceAll("\"price\":", "\"ns1_price\":");
 		System.out.println(parsedQuery);
 
-		return restTemplate.postForObject(url, parsedQuery, String.class);
+		JsonObject results = Json.parse(restTemplate.postForObject(url, parsedQuery, String.class).toString()).asObject();
+		JsonArray baseRes = results.get("hits").asObject().get("hits").asArray();
+		Hashtable<String, Integer> precision = qp.precision;
+		double maxScore = results.get("hits").asObject().getDouble("max_score", 1.0);
+		double defaultPrecision = maxScore*(1-(precision.get("_default_") * 0.01));
+		JsonArray coreRes = new JsonArray();
+		String cateory="";
+		double usePrecision=0.00;
+		for(JsonValue v : baseRes) {
+			usePrecision=defaultPrecision;
+			double score = v.asObject().get("_score").asDouble();
+			cateory = results.get("hits").asObject().get("hits").asArray().get(0).asObject().get("_source").asObject().get("category").asString();
+			if(precision.containsKey(cateory)){
+				usePrecision = (1-(precision.get(cateory) * 0.01)) * maxScore;
+			}
+			if(score >= usePrecision) {
+				JsonObject eO = v.asObject();
+				eO.remove("s_n_s_tags");
+				coreRes.add(eO);
+			}
+		}
+		JsonObject results1 =results.get("hits").asObject().remove("hits");
+		results1.add("hits",coreRes);
+		JsonObject finalResult = results.asObject().remove("hits");
+		finalResult.add("hits",results1);
+		return finalResult.toString();
 	}
 
 	@RequestMapping(value = "search/ui", method = RequestMethod.GET)
