@@ -1,4 +1,4 @@
-app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notification', '$state', '$location','$cookies', function($scope, $rootScope, $http, Notification, $state, $location,$cookies) {
+app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notification', '$location', '$state','$cookies', function($scope, $rootScope, $http, Notification, $location, $state,$cookies) {
     $scope.headingTitle = "User List";
     $scope.key = '';
     $scope.spellings = '';
@@ -37,7 +37,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
                 $scope.message = data;
                 $scope.openAddSpelling = false;
                 $scope.registeredLinks = data;
-                $state.go('panel.settings.spelling');
+                $state.go($state.current, {}, { reload: true });
                 Notification.success('Spellings saved successfully');
             });
             res.error(function(data, status, headers, config) {
@@ -59,7 +59,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
             $scope.message = data;
             $scope.openAddSpelling = false;
             $scope.registeredLinks = data;
-            $state.go('panel.settings.spelling');
+            $state.go($state.current, {}, { reload: true });
             Notification.success('Spellings saved successfully');
         });
         res.error(function(data, status, headers, config) {
@@ -75,7 +75,7 @@ app.controller('spellingController', ['$scope', '$rootScope', '$http', 'Notifica
                 $scope.message = data;
                 $scope.openAddSpelling = false;
                 $scope.registeredLinks = data;
-                $state.go('panel.settings.spelling');
+                $state.go($state.current, {}, { reload: true });
                 Notification.success('Spelling deleted successfully');
             });
             res.error(function(data, status, headers, config) {

@@ -257,7 +257,7 @@ public class DQueryProcessor {
 			for(String word : fields.get(s))
 				words += word +" ";
 
-			if(index_name.equals("flyrobe")) {
+			if(index_name.equals("flyrobe2")) {
 				String weight = w_map_flyrobe.get(s);
 				//				System.out.println(s);
 				if(s.equals("title")) {

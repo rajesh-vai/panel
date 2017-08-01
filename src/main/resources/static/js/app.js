@@ -1,5 +1,5 @@
 //This should be same as the WAR to be generated name
-_appName_ = "/flyrobe2";
+_appName_ = "/fashion3";
 //
 
 var app = angular.module('app', ['ui.bootstrap','ui.toggle','ui.router','ui.bootstrap.typeahead','appDirectives','AngularChart','ui-notification','dndLists','ngCookies','ngSanitize']);

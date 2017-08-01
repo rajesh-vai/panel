@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 public class CustomContainer implements EmbeddedServletContainerCustomizer {
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
-        container.setContextPath("/flyrobe2");
+        container.setContextPath("/fashion3");
     }
 }
