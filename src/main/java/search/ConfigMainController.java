@@ -85,14 +85,13 @@ public class ConfigMainController {
             e.printStackTrace();
         }
         List<String> outputLines = new ArrayList<>();
-        if(filterText.length() > 0) {
+        if(filterText.length() > 0 && !filterText.equalsIgnoreCase("dummy") && selectedCategory.length() > 0){
             Document doc = Jsoup.connect(
-                    elasticDbUrl + indexname + "/_search?q=pid:" + filterText)
+                    elasticDbUrl + indexname + "/_search?q=pid:" + filterText + " OR category:" + selectedCategory )
                     .ignoreContentType(true).get();
             JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
             JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
-
 
 
             for (int j = 0; j < resultsArray.size(); j++) {
@@ -103,14 +102,29 @@ public class ConfigMainController {
                 outputLines.add(record.toString());
             }
         }
-        if(selectedCategory.length() > 0) {
+        else if (filterText.length() > 0 && !filterText.equalsIgnoreCase("dummy")) {
+            Document doc = Jsoup.connect(
+                    elasticDbUrl + indexname + "/_search?q=pid:" + filterText)
+                    .ignoreContentType(true).get();
+            JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
+
+            JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
+
+
+            for (int j = 0; j < resultsArray.size(); j++) {
+                JsonValue record = resultsArray.get(j).asObject().get("_source");
+                if (ranking.containsKey(record.asObject().get("pid").asString())) {
+                    record.asObject().add("rank", ranking.get(record.asObject().get("pid").asString()));
+                }
+                outputLines.add(record.toString());
+            }
+        } else if (selectedCategory.length() > 0) {
             Document doc = Jsoup.connect(
                     elasticDbUrl + indexname + "/_search?q=category:" + selectedCategory)
                     .ignoreContentType(true).get();
             JsonObject jsonResult = Json.parse(doc.select("body").text()).asObject();
 
             JsonArray resultsArray = jsonResult.get("hits").asObject().get("hits").asArray();
-
 
 
             for (int j = 0; j < resultsArray.size(); j++) {
