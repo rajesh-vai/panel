@@ -1,5 +1,6 @@
 package search;
 
+import org.apache.commons.lang.WordUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.jsoup.Jsoup;
@@ -190,8 +191,17 @@ public class SearchMainController {
 		for(JsonValue value : coreRes) {
 			JsonObject row = value.asObject();
 			sb_table.append("<tr>");
-			for(int i=0;i<headers.length;i++)
-				sb_table.append("<td nowrap>"+row.get(headers[i]).toString()+"</td>");
+			org.json.JSONObject rowObject = new org.json.JSONObject(row.toString());
+
+			for (int i = 0; i < headers.length; i++) {
+
+				if (rowObject.has(headers[i])) {
+
+					sb_table.append("<td nowrap>" + row.get(headers[i]).toString() + "</td>");
+
+				} else
+					sb_table.append("<td nowrap></td>");
+			}
 			sb_table.append("</tr>");
 		}
 		sb_table.append("</table></body></html>");

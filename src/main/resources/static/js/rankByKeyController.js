@@ -43,12 +43,23 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             $.each(data, function(index, value) {
                 $scope.filteredResults.push(JSON.parse(value));
             });
-            $scope.filteredResults = _.sortBy( $scope.filteredResults, 'rank');
+//            $scope.filteredResults = _.sortBy( $scope.filteredResults, 'rank');
+            if(!_.has($scope.filteredResults[0], "popularity")){
+                Notification.error("Feed does not have the popularity field. Rank cannot be updated");
+                $scope.filteredResults=[];
+                $scope.showSpinner = false;
+                return false;
+            }
+            else {
+                $scope.filteredSortedResults = _.sortBy( $scope.filteredResults, 'popularity');
+                $scope.filteredSortedResults = $scope.filteredSortedResults.reverse();
+                $scope.filteredResults= $scope.filteredSortedResults;
+            }
             $scope.showSpinner = false;
         });
     };
 
-    $scope.updateDetails = function(updatedProductId, rank) {
+    $scope.updateDetails = function(updatedProductId, rank, popularity) {
         if(!rank){
             Notification.error("Please specify the rank to be updated");
             return false;
@@ -57,9 +68,16 @@ $http.get(_appName_ + '/rest/config/panel/'+$cookies.get('fgt45hi7hfturtyrfgh'))
             Notification.error("Only number is allowed for rank field");
             return false;
         }
+        var popularityToBeUpdated;
+        if(rank==1){
+            popularityToBeUpdated = $scope.filteredSortedResults[0].popularity + 1;
+        }
+        else {
+            popularityToBeUpdated = Math.floor(($scope.filteredSortedResults[rank-2].popularity + $scope.filteredSortedResults[rank-1].popularity)/2);
+        }
 
         $scope.showSpinner = true;
-        var res = $http.post(uriPrefix + '/update/rankbykey/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+rank, updatedProductId);
+        var res = $http.post(uriPrefix + '/update/rankbykey/'+$cookies.get('fgt45hi7hfturtyrfgh')+'/'+rank+'/'+popularityToBeUpdated, updatedProductId);
         res.success(function(data, status, headers, config) {
             Notification.success('Rank has been updated successfully');
             $scope.showSpinner = false;

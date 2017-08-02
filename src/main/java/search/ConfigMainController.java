@@ -168,8 +168,7 @@ public class ConfigMainController {
                 }
                 outputLines.add(record.toString());
             }
-            if (j >= 24)
-                break;
+
         }
 
         return outputLines;
@@ -394,15 +393,18 @@ public class ConfigMainController {
 
     // End of Precision Configuration
 
-    @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}"}, method = {
+    @RequestMapping(value = {"config/update/rankbykey/{companyid}/{rank}/{popularity}"}, method = {
             RequestMethod.POST})
-    public void updateRankByKey(@PathVariable int companyid,@PathVariable String rank,@RequestBody String data) throws IOException, URISyntaxException {
+    public void updateRankByKey(@PathVariable int companyid,@PathVariable String rank,@RequestBody String data,@PathVariable int popularity) throws IOException, URISyntaxException {
         dbUtils.InsertUpdateData("delete from rankbykeyword where companyid="+companyid + " and productid ='" +data +"'");
         String qry = "INSERT INTO rankbykeyword (CompanyID, productid,rank ) values (" + companyid + ",'" + data + "'," + Integer.parseInt(rank) + ")";
         dbUtils.InsertUpdateData(qry);
-
+        String url = "http://localhost:9200/"+indexname+"/product/"+data+"/_update";
+        String updateQry = "{    \"doc\": { \"popularity\": "+popularity+ " }   }";
+        System.out.println(updateQry);
+        JsonObject results = Json.parse(restTemplate.postForObject(url, updateQry, String.class).toString()).asObject();
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
-
+        System.out.println(results.toString());
     }
 
     @RequestMapping(value = {"config/delete/rankbykey/{companyid}/{productid}"}, method = {
@@ -410,6 +412,9 @@ public class ConfigMainController {
     public void deleteRankByKey(@PathVariable int companyid, @PathVariable String productid) throws IOException, URISyntaxException {
         dbUtils.InsertUpdateData("delete from rankbykeyword where companyid=" + companyid + " and productid ='" + productid + "'");
 //        Jsoup.connect(searchUrl + warName + "/" + "watcher/update").ignoreContentType(true).get();
+        String url = "http://localhost:9200/"+indexname+"/product/"+productid+"/_update";
+        String updateQry = "{    \"doc\": { \"popularity\": "+0+ " }   }";
+        JsonObject results = Json.parse(restTemplate.postForObject(url, updateQry, String.class).toString()).asObject();
     }
 
     @RequestMapping(value = {"config/update/rankbyproduct/{companyid}/{rank}/{productid}"}, method = {

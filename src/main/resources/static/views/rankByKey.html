@@ -1,4 +1,4 @@
-<div class="small-left-padding">
+<div class="small-left-padding container-autoscroll">
     <div>
         <h4>Rank by Keyword
             <a tooltip="Used for boosting rank/promotion of specific products for a given search keyword. Search for the keyword or query to set the rank for ProductId" tooltip-placement="right" tooltip-append-to-body="true" class="glyphicon glyphicon-info-sign info-icon"></a>
@@ -43,7 +43,7 @@
                 <td>
                     <span><a ng-show="showEdit" ng-click="showEdit = false; showSaveCancel= true;" class="hand"><span class="glyphicon glyphicon-pencil"></span></a>
                     </span>
-                    <span><a ng-show="showSaveCancel" ng-click="updateDetails(result.pid,result.rank);showSaveCancel = false; showEdit= true;" class="hand"><span class="glyphicon glyphicon-ok small-top-margin"></span></a>
+                    <span><a ng-show="showSaveCancel" ng-click="updateDetails(result.pid,result.rank,result.popularity);showSaveCancel = false; showEdit= true;" class="hand"><span class="glyphicon glyphicon-ok small-top-margin"></span></a>
                     </span>
                     <span><a ng-show="showSaveCancel" ng-click="showSaveCancel = false; showEdit= true;" class="hand"><span class="glyphicon glyphicon-remove small-left-margin"></span></a>
                     </span>
@@ -56,7 +56,7 @@
             </tr>
         </table>
     </div>
-    <div class="col-xs-10 medium-left-padding " ng-show="filteredResults.length==0 ">
+    <div class="col-xs-10 medium-left-padding " ng-show="filteredResults.length==0 && Notification.length < 1 ">
         <h3>No products for the given keyword! </h3>
     </div>
     <!--<div class="small-top-padding">
